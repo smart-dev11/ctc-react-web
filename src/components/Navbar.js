@@ -1,5 +1,8 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
+import Input from './Input';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 export default () => (
   <div
@@ -14,11 +17,11 @@ export default () => (
   >
     <div sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
       <img src={require('../assets/logo.png')} alt="Logo" sx={{ pr: 11 }}></img>
-      <input
-        type="text"
-        sx={{ borderColor: 'border', py: 1, px: 3 }}
+      <Input
+        leftComponent={<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
         placeholder="Find Companies & Connections"
-      ></input>
+        sx={{ borderColor: 'border', py: 1, px: 3 }}
+      ></Input>
     </div>
   </div>
 );

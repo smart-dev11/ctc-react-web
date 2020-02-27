@@ -18,10 +18,18 @@ export default () => (
     <div sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
       <img src={require('../assets/logo.png')} alt="Logo" sx={{ pr: 11 }}></img>
       <Input
-        leftComponent={<FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>}
+        leftComponent={
+          <FontAwesomeIcon
+            icon={faSearch}
+            sx={{ pr: 2, fontSize: 3 }}
+            fixedWidth
+          ></FontAwesomeIcon>
+        }
         placeholder="Find Companies & Connections"
-        sx={{ borderColor: 'border', py: 1, px: 3 }}
+        containerSx={{ py: 2, px: 3, flex: 1 }}
+        inputSx={{ fontSize: 2 }}
       ></Input>
     </div>
+    <div sx={{ flex: 1 }}></div>
   </div>
 );

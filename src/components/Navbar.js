@@ -23,7 +23,7 @@ export default () => (
           </div>
         }
         placeholder="Find Companies & Connections"
-        sx={{ px: 3, flex: 1 }}
+        sx={{ px: 3, flex: 1, maxWidth: 380 }}
         inputSx={{ py: 2, fontSize: 2 }}
       ></Input>
     </div>
@@ -40,6 +40,10 @@ export default () => (
       <Link>JOBS</Link>
       <Link>RESUMES</Link>
       <Link>LOGIN</Link>
+      <i
+        className="fas fa-user-circle"
+        sx={{ fontSize: 5, color: 'border' }}
+      ></i>
     </div>
   </div>
 );

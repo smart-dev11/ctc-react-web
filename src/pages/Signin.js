@@ -2,7 +2,6 @@
 import { jsx } from 'theme-ui';
 import Input from '../components/Input';
 import Link from '../components/Link';
-import Button from '../components/Button';
 
 export default () => {
   return (
@@ -34,10 +33,6 @@ export default () => {
           Terms of Service and Privacy Policy
         </div>
       </div>
-      <Link to="/signin" color="primary" sx={{ mt: 4 }}>
-        I already have an account - sign in
-      </Link>
-      <Button sx={{ mt: 5, width: 320 }}>CONTINUE</Button>
     </div>
   );
 };

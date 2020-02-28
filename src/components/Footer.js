@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import Link from './Link';
+import SocialContainer from './SocialContainer';
 
 export default () => (
   <div
@@ -13,20 +14,18 @@ export default () => (
     }}
   >
     <div>
-      <div
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: 56,
-          height: 56,
-          borderRadius: '50%',
-          bg: 'placeholder',
-          color: 'white'
-        }}
-      >
+      <SocialContainer>
         <i class="fab fa-linkedin-in"></i>
-      </div>
+      </SocialContainer>
+      <SocialContainer sx={{ ml: 3 }}>
+        <i class="fab fa-facebook-f"></i>
+      </SocialContainer>
+      <SocialContainer sx={{ ml: 3 }}>
+        <i class="fab fa-youtube"></i>
+      </SocialContainer>
+      <SocialContainer sx={{ ml: 3 }}>
+        <i class="fab fa-instagram"></i>
+      </SocialContainer>
     </div>
     <div sx={{ mt: 4 }}>
       <Link>Messages</Link>

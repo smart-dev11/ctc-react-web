@@ -19,7 +19,7 @@ export default () => (
       <Input
         leftComponent={
           <div sx={{ pr: 2 }}>
-            <i class="fas fa-search"></i>
+            <i className="fas fa-search"></i>
           </div>
         }
         placeholder="Find Companies & Connections"

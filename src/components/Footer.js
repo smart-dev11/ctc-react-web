@@ -6,25 +6,23 @@ import SocialContainer from './SocialContainer';
 export default () => (
   <div
     sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+      textAlign: 'center',
       bg: 'white',
       py: 12
     }}
   >
     <div>
       <SocialContainer>
-        <i class="fab fa-linkedin-in"></i>
+        <i className="fab fa-linkedin-in"></i>
       </SocialContainer>
       <SocialContainer sx={{ ml: 3 }}>
-        <i class="fab fa-facebook-f"></i>
+        <i className="fab fa-facebook-f"></i>
       </SocialContainer>
       <SocialContainer sx={{ ml: 3 }}>
-        <i class="fab fa-youtube"></i>
+        <i className="fab fa-youtube"></i>
       </SocialContainer>
       <SocialContainer sx={{ ml: 3 }}>
-        <i class="fab fa-instagram"></i>
+        <i className="fab fa-instagram"></i>
       </SocialContainer>
     </div>
     <div sx={{ mt: 4 }}>

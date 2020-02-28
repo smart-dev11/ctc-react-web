@@ -8,6 +8,7 @@ import GlobalStyles from './components/GlobalStyles';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Signup from './pages/Signup';
 import Footer from './components/Footer';
+import Signin from './pages/Signin';
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
               <Switch>
                 <Route path="/signup">
                   <Signup></Signup>
+                </Route>
+                <Route path="/signin">
+                  <Signin></Signin>
                 </Route>
                 <Route path="/" exact>
                   <Redirect to={{ pathname: '/signup' }}></Redirect>

@@ -34,7 +34,7 @@ export default () => {
           Terms of Service and Privacy Policy
         </div>
       </div>
-      <Link to="/signin" color="primary" sx={{ mt: 4 }}>
+      <Link to="/signin" color="primary" sx={{ mt: 5 }}>
         I already have an account - sign in
       </Link>
       <Button sx={{ mt: 5, width: 320 }}>CONTINUE</Button>

@@ -2,8 +2,6 @@
 import { jsx } from 'theme-ui';
 import Input from './Input';
 import Link from './Link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 export default () => (
   <div
@@ -20,11 +18,9 @@ export default () => (
       <img src={require('../assets/logo.png')} alt="Logo" sx={{ pr: 11 }}></img>
       <Input
         leftComponent={
-          <FontAwesomeIcon
-            icon={faSearch}
-            sx={{ pr: 2, fontSize: 3 }}
-            fixedWidth
-          ></FontAwesomeIcon>
+          <div sx={{ pr: 2 }}>
+            <i class="fas fa-search"></i>
+          </div>
         }
         placeholder="Find Companies & Connections"
         sx={{ px: 3, flex: 1 }}

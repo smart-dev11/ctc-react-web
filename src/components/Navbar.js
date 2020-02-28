@@ -28,8 +28,7 @@ export default () => (
         }
         placeholder="Find Companies & Connections"
         sx={{ px: 3, flex: 1 }}
-        inputSx={{ py: 2 }}
-        inputSx={{ fontSize: 2 }}
+        inputSx={{ py: 2, fontSize: 2 }}
       ></Input>
     </div>
     <div

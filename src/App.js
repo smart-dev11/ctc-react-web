@@ -7,7 +7,7 @@ import Navbar from './components/Navbar';
 import GlobalStyles from './components/GlobalStyles';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Signup from './pages/Signup';
-import Link from './components/Link';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -41,20 +41,7 @@ function App() {
                   <Redirect to={{ pathname: '/signup' }}></Redirect>
                 </Route>
               </Switch>
-              <div sx={{ textAlign: 'center', bg: 'white', py: 12 }}>
-                <div>
-                  <Link>Messages</Link>
-                  <Link sx={{ pl: 12 }}>Resumes</Link>
-                  <Link sx={{ pl: 12 }}>Jobs</Link>
-                </div>
-                <div sx={{ pt: 4 }}>
-                  <Link>About Us</Link>
-                  <Link sx={{ pl: 12 }}>Contact Us</Link>
-                  <Link sx={{ pl: 12 }}>Refund Policy</Link>
-                  <Link sx={{ pl: 12 }}>Login</Link>
-                </div>
-                <div sx={{ pt: 4 }}>Copyright © 2019 Couch to Career</div>
-              </div>
+              <Footer></Footer>
             </div>
           </div>
         </Fragment>

@@ -25,10 +25,10 @@ export default () => {
         }}
       >
         <div sx={{ fontSize: 2, fontWeight: 'bold' }}>Create an Account</div>
-        <Input placeholder="Full Name" containerSx={{ mt: 10 }}></Input>
-        <Input placeholder="Email" containerSx={{ mt: 4 }}></Input>
-        <Input placeholder="Password" containerSx={{ mt: 4 }}></Input>
-        <Input placeholder="Confirm Password" containerSx={{ mt: 4 }}></Input>
+        <Input placeholder="Full Name" sx={{ mt: 10 }}></Input>
+        <Input placeholder="Email" sx={{ mt: 4 }}></Input>
+        <Input placeholder="Password" sx={{ mt: 4 }}></Input>
+        <Input placeholder="Confirm Password" sx={{ mt: 4 }}></Input>
         <div sx={{ mt: 8, fontSize: 10, lineHeight: 2 }}>
           By creating an account you agree to our <br />
           Terms of Service and Privacy Policy

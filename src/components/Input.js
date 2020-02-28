@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
 
-export default ({ leftComponent, containerSx, inputSx, ...props }) => {
+export default ({ leftComponent, className, inputSx, ...props }) => {
   const { theme } = useThemeUI();
 
   return (
@@ -9,18 +9,18 @@ export default ({ leftComponent, containerSx, inputSx, ...props }) => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        py: 4,
         px: 5,
-        border: `1px solid ${theme.colors.border}`,
-        ...containerSx
+        border: `1px solid ${theme.colors.border}`
       }}
+      className={className}
     >
       {leftComponent}
       <input
         type="text"
         sx={{
           flex: 1,
-          p: 0,
+          px: 0,
+          py: 4,
           border: 'none',
           outline: 'none',
           '::placeholder': { color: 'placeholder' },

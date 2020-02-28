@@ -27,13 +27,15 @@ export default () => (
           ></FontAwesomeIcon>
         }
         placeholder="Find Companies & Connections"
-        containerSx={{ py: 2, px: 3, flex: 1 }}
+        sx={{ px: 3, flex: 1 }}
+        inputSx={{ py: 2 }}
         inputSx={{ fontSize: 2 }}
       ></Input>
     </div>
     <div
       sx={{
         pl: 10,
+        maxWidth: 600,
         flex: 1,
         display: 'flex',
         justifyContent: 'space-between',

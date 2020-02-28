@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import Input from './Input';
+import Link from './Link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -30,6 +31,18 @@ export default () => (
         inputSx={{ fontSize: 2 }}
       ></Input>
     </div>
-    <div sx={{ flex: 1 }}></div>
+    <div
+      sx={{
+        pl: 10,
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}
+    >
+      <Link>JOBS</Link>
+      <Link>RESUMES</Link>
+      <Link>LOGIN</Link>
+    </div>
   </div>
 );

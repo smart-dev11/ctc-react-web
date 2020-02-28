@@ -6,8 +6,7 @@ export default {
     primary: '#FAAC1E',
     text: '#707070',
     placeholder: '#DDDDDD',
-    border: '#DDDDDD',
-    white: '#FFFFFF'
+    border: '#DDDDDD'
   },
   space: [...Array(20).keys()].map(val => val * 4),
   fonts: {},

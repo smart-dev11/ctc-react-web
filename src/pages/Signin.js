@@ -12,7 +12,8 @@ export default () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: 10
       }}
     >
       <div

@@ -27,14 +27,14 @@ export default () => (
     </div>
     <div sx={{ mt: 4 }}>
       <Link>Messages</Link>
-      <Link sx={{ pl: 12 }}>Resumes</Link>
-      <Link sx={{ pl: 12 }}>Jobs</Link>
+      <Link sx={{ pl: [6, 12] }}>Resumes</Link>
+      <Link sx={{ pl: [6, 12] }}>Jobs</Link>
     </div>
     <div sx={{ pt: 4 }}>
       <Link>About Us</Link>
-      <Link sx={{ pl: 12 }}>Contact Us</Link>
-      <Link sx={{ pl: 12 }}>Refund Policy</Link>
-      <Link sx={{ pl: 12 }}>Login</Link>
+      <Link sx={{ pl: [6, 12] }}>Contact Us</Link>
+      <Link sx={{ pl: [6, 12] }}>Refund Policy</Link>
+      <Link sx={{ pl: [6, 12] }}>Login</Link>
     </div>
     <div sx={{ pt: 4 }}>Copyright © 2019 Couch to Career</div>
   </div>

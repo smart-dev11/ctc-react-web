@@ -27,7 +27,7 @@ export default () => (
       <img
         src={require('../assets/logo.png')}
         alt="Logo"
-        sx={{ pr: [0, 11] }}
+        sx={{ pr: [0, 11], ml: -4 }}
       ></img>
       <Input
         leftComponent={

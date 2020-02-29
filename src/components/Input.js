@@ -10,7 +10,8 @@ export default ({ leftComponent, className, inputSx, ...props }) => {
         display: 'flex',
         alignItems: 'center',
         px: 5,
-        border: `1px solid ${theme.colors.border}`
+        border: `1px solid ${theme.colors.border}`,
+        backgroundColor: 'white'
       }}
       className={className}
     >

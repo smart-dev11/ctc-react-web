@@ -21,7 +21,8 @@ export default () => {
           py: 9,
           px: 6,
           boxShadow: 'medium',
-          textAlign: 'center'
+          textAlign: 'center',
+          backgroundColor: 'white'
         }}
       >
         <div sx={{ fontSize: 2, fontWeight: 'bold' }}>Login</div>

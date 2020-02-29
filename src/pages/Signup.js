@@ -3,19 +3,11 @@ import { jsx } from 'theme-ui';
 import Input from '../components/Input';
 import Link from '../components/Link';
 import Button from '../components/Button';
+import Page from '../components/Page';
 
 export default () => {
   return (
-    <div
-      sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 10
-      }}
-    >
+    <Page sx={{ justifyContent: 'center', alignItems: 'center' }}>
       <div
         sx={{
           width: 320,
@@ -40,6 +32,6 @@ export default () => {
         I already have an account - sign in
       </Link>
       <Button sx={{ mt: 5, width: 320 }}>CONTINUE</Button>
-    </div>
+    </Page>
   );
 };

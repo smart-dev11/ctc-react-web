@@ -6,9 +6,10 @@ import theme from './theme';
 import Navbar from './components/Navbar';
 import GlobalStyles from './components/GlobalStyles';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import Signup from './pages/Signup';
 import Footer from './components/Footer';
+import Signup from './pages/Signup';
 import Signin from './pages/Signin';
+import Resumes from './pages/Resumes';
 
 function App() {
   return (
@@ -40,6 +41,9 @@ function App() {
                 </Route>
                 <Route path="/signin">
                   <Signin></Signin>
+                </Route>
+                <Route path="/resumes">
+                  <Resumes></Resumes>
                 </Route>
                 <Route path="/" exact>
                   <Redirect to={{ pathname: '/signup' }}></Redirect>

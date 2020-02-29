@@ -19,9 +19,10 @@ export default () => {
         <div
           sx={{
             border: `1px dashed ${theme.colors.text}`,
-            py: 13,
-            px: 19,
-            textAlign: 'center'
+            py: [6, 13],
+            px: [6, 19],
+            textAlign: 'center',
+            backgroundColor: 'white'
           }}
         >
           <div sx={{ fontSize: 2, color: 'text' }}>

@@ -27,12 +27,14 @@ export default () => {
           Position
         </Tab>
       </div>
-      <div sx={{ p: 12, boxShadow: 'medium', flex: 1 }}>
+      <div
+        sx={{ p: 12, boxShadow: 'medium', flex: 1, backgroundColor: 'white' }}
+      >
         <div
           sx={{
             border: `1px dashed ${theme.colors.text}`,
-            py: 13,
-            px: 20,
+            py: [6, 13],
+            px: [6, 19],
             textAlign: 'center'
           }}
         >

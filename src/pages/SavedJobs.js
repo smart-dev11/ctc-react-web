@@ -15,14 +15,15 @@ export default () => {
   return (
     <Page>
       <PageTitle>Saved Jobs</PageTitle>
-      <div sx={{ p: 12, boxShadow: 'medium', flex: 1 }}>
+      <div
+        sx={{ p: 12, boxShadow: 'medium', flex: 1, backgroundColor: 'white' }}
+      >
         <div
           sx={{
             border: `1px dashed ${theme.colors.text}`,
             py: [6, 13],
             px: [6, 19],
-            textAlign: 'center',
-            backgroundColor: 'white'
+            textAlign: 'center'
           }}
         >
           <div sx={{ fontSize: 2, color: 'text' }}>

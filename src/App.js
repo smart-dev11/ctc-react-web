@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import Resumes from './pages/Resumes';
+import SavedJobs from './pages/SavedJobs';
 
 function App() {
   return (
@@ -44,6 +45,9 @@ function App() {
                 </Route>
                 <Route path="/resumes">
                   <Resumes></Resumes>
+                </Route>
+                <Route path="/saved-jobs">
+                  <SavedJobs></SavedJobs>
                 </Route>
                 <Route path="/" exact>
                   <Redirect to={{ pathname: '/signup' }}></Redirect>

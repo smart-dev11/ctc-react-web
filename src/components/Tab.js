@@ -10,6 +10,7 @@ export default ({ children, active, ...props }) => {
         py: 2,
         px: 6,
         fontSize: 2,
+        cursor: 'pointer',
         borderBottom: active ? `2px solid ${theme.colors.primary}` : 0
       }}
       {...props}

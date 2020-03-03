@@ -13,6 +13,7 @@ import Resumes from './pages/Resumes';
 import SavedJobs from './pages/SavedJobs';
 
 function App() {
+  console.log(process.env.REACT_APP_API_URL);
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>

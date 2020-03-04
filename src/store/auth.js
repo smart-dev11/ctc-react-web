@@ -1,15 +1,19 @@
 import request from '../utils/request';
 import produce from 'immer';
 import { ActionType } from 'redux-promise-middleware';
+import delay from 'p-min-delay';
 
-const LOGIN = 'auth/LOGIN';
-const REGISTER = 'auth/REGISTER';
-const LOGOUT = 'auth/LOGOUT';
+export const LOGIN = 'LOGIN';
+export const REGISTER = 'REGISTER';
+export const LOGOUT = 'LOGOUT';
 
 export const register = (email, password) => dispatch =>
   dispatch({
     type: REGISTER,
-    payload: request.post('/authentication/register', { email, password })
+    payload: delay(
+      request.post('/authentication/register', { email, password }),
+      1500
+    )
   }).then(data => {
     localStorage.setItem('token', data.token);
     return data;
@@ -18,7 +22,10 @@ export const register = (email, password) => dispatch =>
 export const login = (email, password) => dispatch =>
   dispatch({
     type: LOGIN,
-    payload: request.post('/authentication/login', { email, password })
+    payload: delay(
+      request.post('/authentication/login', { email, password }),
+      1500
+    )
   }).then(data => {
     localStorage.setItem('token', data.token);
     return data;

@@ -9,7 +9,7 @@ export default (state = {}, action) => {
   const [, requestName, requestState] = matches;
   return {
     ...state,
-    [requestName]: requestState === 'REJECTED' ? action.payload.message : ''
+    [requestName]: requestState === 'REJECTED' ? action.payload : ''
   };
 };
 

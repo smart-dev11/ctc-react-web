@@ -76,7 +76,9 @@ export default () => {
                 borderBottomStyle: 'solid'
               }}
             ></div>
-            {error && <Error sx={{ textAlign: 'center' }}>{error}</Error>}
+            {error && (
+              <Error sx={{ textAlign: 'center' }}>Incorrect Credentials</Error>
+            )}
             <Input
               name="email"
               placeholder="Email"

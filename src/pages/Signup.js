@@ -64,7 +64,9 @@ export default () => {
             <div sx={{ fontSize: 2, fontWeight: 'bold', mb: 10 }}>
               Create an Account
             </div>
-            {error && <Error sx={{ textAlign: 'center' }}>{error}</Error>}
+            {error && (
+              <Error sx={{ textAlign: 'center' }}>Account already exists</Error>
+            )}
             <Input
               name="fullName"
               placeholder="Full Name"

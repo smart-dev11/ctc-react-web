@@ -20,10 +20,10 @@ export default () => {
 
   const { handleSubmit, getFieldProps, touched, errors } = useFormik({
     initialValues: {
-      fullName: 'Eamon',
-      email: 'eamon@gmail.com',
-      password: 'abc123',
-      confirmPassword: 'abc123'
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
     },
     validationSchema: Yup.object({
       fullName: Yup.string().required('Required'),
@@ -39,6 +39,7 @@ export default () => {
       dispatch(register(values.email, values.password));
     }
   });
+
   return (
     <Page sx={{ justifyContent: 'center', alignItems: 'center' }}>
       <LoadingOverlay loading={loading}>

@@ -7,15 +7,17 @@ import Input from '../components/Input';
 import Link from '../components/Link';
 import Button from '../components/Button';
 import Page from '../components/Page';
-import FormError from '../components/FormError';
+import Error from '../components/Error';
 import { register, REGISTER } from '../store/auth';
 import { createLoadingSelector } from '../store/loading';
-import LoadingOverlay from 'react-loading-overlay';
+import { createErrorSelector } from '../store/error';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 export default () => {
   const dispatch = useDispatch();
   const loading = useSelector(createLoadingSelector([REGISTER]));
-  console.log(loading);
+  const error = useSelector(createErrorSelector([REGISTER]));
+
   const { handleSubmit, getFieldProps, touched, errors } = useFormik({
     initialValues: {
       fullName: 'Eamon',
@@ -39,22 +41,7 @@ export default () => {
   });
   return (
     <Page sx={{ justifyContent: 'center', alignItems: 'center' }}>
-      <LoadingOverlay
-        active={loading}
-        spinner
-        styles={{
-          overlay: base => ({
-            ...base,
-            background: 'rgba(255, 255, 255, 0.7)'
-          }),
-          spinner: base => ({
-            ...base,
-            '& svg circle': {
-              stroke: '#FAAC1E'
-            }
-          })
-        }}
-      >
+      <LoadingOverlay loading={loading}>
         <form
           onSubmit={handleSubmit}
           sx={{
@@ -73,17 +60,18 @@ export default () => {
               backgroundColor: 'white'
             }}
           >
-            <div sx={{ fontSize: 2, fontWeight: 'bold' }}>
+            <div sx={{ fontSize: 2, fontWeight: 'bold', mb: 10 }}>
               Create an Account
             </div>
+            {error && <Error sx={{ textAlign: 'center' }}>{error}</Error>}
             <Input
               name="fullName"
               placeholder="Full Name"
-              sx={{ mt: 10 }}
+              sx={{ mt: 4 }}
               {...getFieldProps('fullName')}
             ></Input>
             {touched.fullName && errors.fullName && (
-              <FormError>{errors.fullName}</FormError>
+              <Error>{errors.fullName}</Error>
             )}
             <Input
               name="email"
@@ -91,9 +79,7 @@ export default () => {
               sx={{ mt: 4 }}
               {...getFieldProps('email')}
             ></Input>
-            {touched.email && errors.email && (
-              <FormError>{errors.email}</FormError>
-            )}
+            {touched.email && errors.email && <Error>{errors.email}</Error>}
             <Input
               type="password"
               name="password"
@@ -102,7 +88,7 @@ export default () => {
               {...getFieldProps('password')}
             ></Input>
             {touched.password && errors.password && (
-              <FormError>{errors.password}</FormError>
+              <Error>{errors.password}</Error>
             )}
             <Input
               type="password"
@@ -112,7 +98,7 @@ export default () => {
               {...getFieldProps('confirmPassword')}
             ></Input>
             {touched.confirmPassword && errors.confirmPassword && (
-              <FormError>{errors.confirmPassword}</FormError>
+              <Error>{errors.confirmPassword}</Error>
             )}
             <div sx={{ mt: 8, fontSize: 10, lineHeight: 2 }}>
               By creating an account you agree to our <br />

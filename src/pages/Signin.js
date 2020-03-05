@@ -22,7 +22,7 @@ export default () => {
 
   const { handleSubmit, getFieldProps, touched, errors } = useFormik({
     initialValues: {
-      email: 'eamon@gmail.com',
+      email: 'eamon@example.com',
       password: 'abc123'
     },
     validationSchema: Yup.object({

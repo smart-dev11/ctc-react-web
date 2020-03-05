@@ -12,9 +12,11 @@ import { createLoadingSelector } from '../store/loading';
 import { createErrorSelector } from '../store/error';
 import { LOGIN, login } from '../store/auth';
 import LoadingOverlay from '../components/LoadingOverlay';
+import { useHistory } from 'react-router-dom';
 
 export default () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const loading = useSelector(createLoadingSelector([LOGIN]));
   const error = useSelector(createErrorSelector([LOGIN]));
 
@@ -29,8 +31,9 @@ export default () => {
         .required('Required'),
       password: Yup.string().required('Required')
     }),
-    onSubmit: values => {
-      dispatch(login(values.email, values.password));
+    onSubmit: async values => {
+      await dispatch(login(values.email, values.password));
+      history.replace('/jobs');
     }
   });
 

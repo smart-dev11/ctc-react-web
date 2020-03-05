@@ -2,6 +2,7 @@ import request from '../utils/request';
 import produce from 'immer';
 import { ActionType } from 'redux-promise-middleware';
 import delay from 'p-min-delay';
+import fp from 'lodash/fp';
 
 export const LOGIN = 'LOGIN';
 export const REGISTER = 'REGISTER';
@@ -23,12 +24,13 @@ export const login = (email, password) => dispatch =>
   dispatch({
     type: LOGIN,
     payload: delay(
-      request.post('/authentication/login', { email, password }),
+      request
+        .post('/authentication/login', { email, password })
+        .then(fp.get('data')),
       1500
     )
-  }).then(data => {
-    localStorage.setItem('token', data.token);
-    return data;
+  }).then(({ value }) => {
+    localStorage.setItem('token', value.token);
   });
 
 export const logout = () => dispatch => {
@@ -37,7 +39,7 @@ export const logout = () => dispatch => {
 };
 
 const initialState = {
-  loggedin: true
+  loggedin: !!localStorage.getItem('token')
 };
 
 export default produce((draft, action) => {

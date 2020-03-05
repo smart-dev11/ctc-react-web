@@ -1,11 +1,23 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import Input from './Input';
 import Link from './Link';
+import { useSelector, useDispatch } from 'react-redux';
+import fp from 'lodash/fp';
+import { logout } from '../store/auth';
 
 export default () => {
   const location = useLocation();
+  const history = useHistory();
+  const loggedin = useSelector(fp.get('auth.loggedin'));
+  const dispatch = useDispatch();
+
+  const handleLogoutClick = () => {
+    dispatch(logout());
+    history.replace('/signup');
+  };
+
   return (
     <div
       sx={{
@@ -15,7 +27,8 @@ export default () => {
         px: [40, 60, 90, 120],
         py: 4,
         boxShadow: 'medium',
-        bg: 'white'
+        bg: 'white',
+        zIndex: 1
       }}
     >
       <div
@@ -43,44 +56,36 @@ export default () => {
           inputSx={{ py: 2, fontSize: 2 }}
         ></Input>
       </div>
-      <div
-        sx={{
-          pl: [0, null, null, 10],
-          pt: [4, null, null, 0],
-          width: ['100%', null, null, 'auto'],
-          flex: 1,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <Link
-          to="/saved-jobs"
-          color={location.pathname === '/saved-jobs' ? 'primary' : 'text'}
+      {loggedin && (
+        <div
+          sx={{
+            pl: [0, null, null, 10],
+            pt: [4, null, null, 0],
+            width: ['100%', null, null, 'auto'],
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
         >
-          JOBS
-        </Link>
-        <Link
-          to="/resumes"
-          color={location.pathname === '/resumes' ? 'primary' : 'text'}
-        >
-          RESUMES
-        </Link>
-        <Link
-          to="/signup"
-          color={
-            ['/signup', '/signin'].includes(location.pathname)
-              ? 'primary'
-              : 'text'
-          }
-        >
-          LOGIN
-        </Link>
-        <i
-          className="fas fa-user-circle"
-          sx={{ fontSize: 5, color: 'border' }}
-        ></i>
-      </div>
+          <Link
+            to="/jobs"
+            color={location.pathname === '/jobs' ? 'primary' : 'text'}
+          >
+            JOBS
+          </Link>
+          <Link
+            to="/resumes"
+            color={location.pathname === '/resumes' ? 'primary' : 'text'}
+          >
+            RESUMES
+          </Link>
+          <Link onClick={handleLogoutClick}>LOGOUT</Link>
+          <div sx={{ fontSize: 5, color: 'border' }}>
+            <i className="fas fa-user-circle"></i>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

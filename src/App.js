@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import GlobalStyles from './components/GlobalStyles';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Footer from './components/Footer';
+import PrivateRoute from './components/PrivateRoute';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import Resumes from './pages/Resumes';
@@ -48,14 +49,14 @@ function App() {
                   <Route path="/signin">
                     <Signin></Signin>
                   </Route>
-                  <Route path="/resumes">
+                  <PrivateRoute path="/resumes">
                     <Resumes></Resumes>
-                  </Route>
-                  <Route path="/saved-jobs">
+                  </PrivateRoute>
+                  <PrivateRoute path="/jobs">
                     <SavedJobs></SavedJobs>
-                  </Route>
+                  </PrivateRoute>
                   <Route path="/" exact>
-                    <Redirect to={{ pathname: '/signup' }}></Redirect>
+                    <Redirect to={{ pathname: '/jobs' }}></Redirect>
                   </Route>
                 </Switch>
                 <Footer></Footer>

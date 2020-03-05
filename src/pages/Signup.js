@@ -12,9 +12,11 @@ import { register, REGISTER } from '../store/auth';
 import { createLoadingSelector } from '../store/loading';
 import { createErrorSelector } from '../store/error';
 import LoadingOverlay from '../components/LoadingOverlay';
+import { useHistory } from 'react-router-dom';
 
 export default () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const loading = useSelector(createLoadingSelector([REGISTER]));
   const error = useSelector(createErrorSelector([REGISTER]));
 
@@ -35,8 +37,9 @@ export default () => {
         .oneOf([Yup.ref('password'), null], 'Passwords do not match')
         .required('Required')
     }),
-    onSubmit: values => {
-      dispatch(register(values.email, values.password));
+    onSubmit: async values => {
+      await dispatch(register(values.email, values.password));
+      history.replace('/jobs');
     }
   });
 

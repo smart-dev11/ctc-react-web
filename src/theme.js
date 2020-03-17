@@ -3,7 +3,7 @@ export default {
   colors: {
     body: '#F7F7F7',
     primary: '#FAAC1E',
-    danger: '#d14',
+    danger: '#DD1144',
     text: '#707070',
     placeholder: '#DDDDDD',
     border: '#DDDDDD'

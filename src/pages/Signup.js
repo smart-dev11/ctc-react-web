@@ -57,7 +57,7 @@ export default () => {
           <div
             sx={{
               width: 320,
-              py: 9,
+              py: 10,
               px: 6,
               boxShadow: 'medium',
               textAlign: 'center',

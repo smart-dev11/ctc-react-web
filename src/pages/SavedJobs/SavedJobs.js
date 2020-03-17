@@ -1,8 +1,11 @@
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Page from '../components/Page';
 import PageTitle from '../components/PageTitle';
 import Button from '../components/Button';
+import { getJobs, jobsSelector } from '../store/jobs';
 
 const Step = ({ step, detail, ...props }) => (
   <div sx={{ mt: 8, fontSize: 2, textAlign: 'left' }} {...props}>
@@ -12,6 +15,13 @@ const Step = ({ step, detail, ...props }) => (
 
 export default () => {
   const { theme } = useThemeUI();
+  const dispatch = useDispatch();
+  const jobs = useSelector(jobsSelector);
+
+  useEffect(() => {
+    dispatch(getJobs());
+  }, [dispatch]);
+
   return (
     <Page>
       <PageTitle>Saved Jobs</PageTitle>

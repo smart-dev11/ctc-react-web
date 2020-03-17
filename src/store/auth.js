@@ -12,7 +12,9 @@ export const register = (email, password) => dispatch =>
   dispatch({
     type: REGISTER,
     payload: delay(
-      request.post('/authentication/register', { email, password }),
+      request
+        .post('/authentication/register', { email, password })
+        .then(fp.get('data')),
       1500
     )
   }).then(data => {

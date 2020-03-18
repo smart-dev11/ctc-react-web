@@ -4,6 +4,7 @@ import Page from '../components/Page';
 import PageTitle from '../components/PageTitle';
 import Button from '../components/Button';
 import Tab from '../components/Tab';
+import Link from '../components/Link';
 
 export default () => {
   const { theme } = useThemeUI();
@@ -23,8 +24,10 @@ export default () => {
       </div>
       <div sx={{ mt: 4 }}>
         <Tab active>
-          <i className="fas fa-plus" sx={{ color: 'primary', mr: 1 }}></i> Add
-          Position
+          <Link>
+            <i className="fas fa-plus" sx={{ color: 'primary', mr: 1 }}></i> Add
+            Position
+          </Link>
         </Tab>
       </div>
       <div
@@ -35,7 +38,11 @@ export default () => {
             border: `1px dashed ${theme.colors.text}`,
             py: [6, 13],
             px: [6, 19],
-            textAlign: 'center'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            minHeight: '100%'
           }}
         >
           <div sx={{ fontSize: 2, color: 'text' }}>

@@ -5,6 +5,7 @@ export default {
     primary: '#FAAC1E',
     danger: '#DD1144',
     text: '#707070',
+    darkText: '#1D1E1E',
     placeholder: '#DDDDDD',
     border: '#DDDDDD'
   },

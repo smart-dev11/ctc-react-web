@@ -6,12 +6,20 @@ import Button from '../components/Button';
 import Tab from '../components/Tab';
 import Link from '../components/Link';
 import Input from '../components/Input';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { positionsSelector, getPositions } from '../store/positions';
 
 export default () => {
   const { theme } = useThemeUI();
+  const dispatch = useDispatch();
+  const positions = useSelector(positionsSelector);
   const [editingIndex, setEditingIndex] = useState(0);
-  const [positionText, setpositionText] = useState('');
+  const [positionName, setpositionName] = useState('');
+
+  useEffect(() => {
+    dispatch(getPositions());
+  }, [dispatch]);
 
   const savePosition = () => {};
 
@@ -30,6 +38,9 @@ export default () => {
         </Button>
       </div>
       <div sx={{ mt: 4 }}>
+        {positions.map(position => (
+          <Tab key={position.id}>{position.name}</Tab>
+        ))}
         {editingIndex < 0 ? (
           <div
             sx={{
@@ -41,8 +52,8 @@ export default () => {
             }}
           >
             <Input
-              value={positionText}
-              onChange={e => setpositionText(e.target.value)}
+              value={positionName}
+              onChange={e => setpositionName(e.target.value)}
               inputSx={{ py: 2 }}
               sx={{ width: 180 }}
             ></Input>
@@ -58,10 +69,9 @@ export default () => {
             </Link>
           </div>
         ) : (
-          <Tab active>
-            <Link onClick={() => setEditingIndex(-1)}>
-              <i className="fas fa-plus" sx={{ color: 'primary', mr: 1 }}></i>{' '}
-              Add Position
+          <Tab>
+            <Link color="primary" onClick={() => setEditingIndex(-1)}>
+              <i className="fas fa-plus" sx={{ mr: 1 }}></i> Add Position
             </Link>
           </Tab>
         )}

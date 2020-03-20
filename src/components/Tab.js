@@ -8,7 +8,7 @@ export default ({ children, active, ...props }) => {
       sx={{
         display: 'inline-block',
         py: 2,
-        px: 6,
+        px: 4,
         fontSize: 2,
         cursor: 'pointer',
         borderBottom: active ? `2px solid ${theme.colors.primary}` : 0

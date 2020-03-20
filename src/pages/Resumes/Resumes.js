@@ -1,21 +1,22 @@
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
-import Page from '../components/Page';
-import PageTitle from '../components/PageTitle';
-import Button from '../components/Button';
-import Tab from '../components/Tab';
-import Link from '../components/Link';
-import Input from '../components/Input';
+import Page from '../../components/Page';
+import PageTitle from '../../components/PageTitle';
+import Button from '../../components/Button';
+import Tab from '../../components/Tab';
+import Link from '../../components/Link';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { positionsSelector, getPositions } from '../store/positions';
+import { positionsSelector, getPositions } from '../../store/positions';
+import EditPosition from './EditPosition';
+import PositionTab from './PositionTabionTab';
 
 export default () => {
   const { theme } = useThemeUI();
   const dispatch = useDispatch();
   const positions = useSelector(positionsSelector);
   const [editingIndex, setEditingIndex] = useState(0);
-  const [positionName, setpositionName] = useState('');
+  const [positionName, setPositionName] = useState('');
 
   useEffect(() => {
     dispatch(getPositions());
@@ -39,35 +40,15 @@ export default () => {
       </div>
       <div sx={{ mt: 4 }}>
         {positions.map(position => (
-          <Tab key={position.id}>{position.name}</Tab>
+          <PositionTab key={position.id} position={position.name}></PositionTab>
         ))}
         {editingIndex < 0 ? (
-          <div
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'auto auto auto',
-              gridGap: 4,
-              width: 'fit-content',
-              alignItems: 'center'
-            }}
-          >
-            <Input
-              value={positionName}
-              onChange={e => setpositionName(e.target.value)}
-              inputSx={{ py: 2 }}
-              sx={{ width: 180 }}
-            ></Input>
-            <Link onClick={savePosition} color="primary" sx={{ fontSize: 3 }}>
-              <i className="far fa-save"></i>
-            </Link>
-            <Link
-              onClick={() => setEditingIndex(0)}
-              color="primary"
-              sx={{ fontSize: 3 }}
-            >
-              <i className="fas fa-times"></i>
-            </Link>
-          </div>
+          <EditPosition
+            position={positionName}
+            onPositionChange={setPositionName}
+            onSave={savePosition}
+            onClose={() => setEditingIndex(0)}
+          ></EditPosition>
         ) : (
           <Tab>
             <Link color="primary" onClick={() => setEditingIndex(-1)}>

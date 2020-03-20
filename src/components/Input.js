@@ -25,6 +25,7 @@ export default ({ leftComponent, className, inputSx, ...props }) => {
           border: 'none',
           outline: 'none',
           '::placeholder': { color: 'placeholder' },
+          width: '100%',
           ...inputSx
         }}
         {...props}

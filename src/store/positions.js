@@ -6,11 +6,11 @@ import { createSelector } from 'reselect';
 import _ from 'lodash';
 import fp from 'lodash/fp';
 
-export const GET_JOBS = 'GET_JOBS';
+export const GET_POSITIONS = 'GET_POSITIONS';
 
-export const getJobs = () => ({
-  type: GET_JOBS,
-  payload: delay(request.get('/jobs/').then(fp.get('data')), 1500)
+export const getPositions = () => ({
+  type: GET_POSITIONS,
+  payload: delay(request.get('/positions/').then(fp.get('data')), 1500)
 });
 
 const initialState = {
@@ -19,7 +19,7 @@ const initialState = {
 
 export default produce((draft, action) => {
   switch (action.type) {
-    case `${GET_JOBS}_${ActionType.Fulfilled}`:
+    case `${GET_POSITIONS}_${ActionType.Fulfilled}`:
       draft.byId = _.mapKeys(action.payload, 'id');
       return;
     default:
@@ -27,4 +27,7 @@ export default produce((draft, action) => {
   }
 }, initialState);
 
-export const jobsSelector = createSelector(fp.get('jobs.byId'), fp.values);
+export const positionsSelector = createSelector(
+  fp.get('positions.byId'),
+  fp.values
+);

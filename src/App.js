@@ -11,7 +11,6 @@ import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
-import Resumes from './pages/Resumes';
 import SavedJobs from './pages/SavedJobs';
 import configureStore from './store/configureStore';
 
@@ -49,9 +48,6 @@ function App() {
                   <Route path="/signin">
                     <Signin></Signin>
                   </Route>
-                  <PrivateRoute path="/resumes">
-                    <Resumes></Resumes>
-                  </PrivateRoute>
                   <PrivateRoute path="/jobs">
                     <SavedJobs></SavedJobs>
                   </PrivateRoute>

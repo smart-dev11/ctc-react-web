@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import { useEffect, Fragment } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
@@ -8,20 +8,47 @@ import Link from '../../components/Link';
 import { getJobs, jobsSelector } from '../../store/jobs';
 import NoJobs from './NoJobs';
 import Moment from 'react-moment';
+import EditPosition from './EditPosition';
+import PositionTab from './PositionTab';
+import { positionsSelector, getPositions } from '../../store/positions';
+import Tab from '../../components/Tab';
 
 export default () => {
   const dispatch = useDispatch();
   const jobs = useSelector(jobsSelector);
+  const positions = useSelector(positionsSelector);
+  const [editingIndex, setEditingIndex] = useState(0);
+  const [positionName, setPositionName] = useState('');
 
   useEffect(() => {
     dispatch(getJobs());
+    dispatch(getPositions());
   }, [dispatch]);
 
-  console.log(jobs);
+  const savePosition = () => {};
 
   return (
     <Page>
       <PageTitle>Saved Jobs</PageTitle>
+      <div sx={{ mt: 4 }}>
+        {positions.map(position => (
+          <PositionTab key={position.id} position={position.name}></PositionTab>
+        ))}
+        {editingIndex < 0 ? (
+          <EditPosition
+            position={positionName}
+            onPositionChange={setPositionName}
+            onSave={savePosition}
+            onClose={() => setEditingIndex(0)}
+          ></EditPosition>
+        ) : (
+          <Tab>
+            <Link color="primary" onClick={() => setEditingIndex(-1)}>
+              <i className="fas fa-plus" sx={{ mr: 1 }}></i> Add Position
+            </Link>
+          </Tab>
+        )}
+      </div>
       {jobs.length > 0 ? (
         <Fragment>
           <div

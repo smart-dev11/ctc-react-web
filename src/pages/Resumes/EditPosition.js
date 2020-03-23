@@ -8,7 +8,7 @@ export default ({ position, onPositionChange, onSave, onClose }) => (
     sx={{
       display: 'inline-grid',
       gridTemplateColumns: 'auto auto auto',
-      gridGap: 4,
+      gridGap: 2,
       width: 'fit-content',
       alignItems: 'center'
     }}
@@ -20,7 +20,7 @@ export default ({ position, onPositionChange, onSave, onClose }) => (
       sx={{ width: 180 }}
     ></Input>
     <Link onClick={onSave} color="primary" sx={{ fontSize: 3 }}>
-      <i className="far fa-save"></i>
+      <i className="fas fa-save"></i>
     </Link>
     <Link onClick={onClose} color="primary" sx={{ fontSize: 3 }}>
       <i className="fas fa-times"></i>

@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { positionsSelector, getPositions } from '../../store/positions';
 import EditPosition from './EditPosition';
-import PositionTab from './PositionTabionTab';
+import PositionTab from './PositionTab';
 
 export default () => {
   const { theme } = useThemeUI();

@@ -11,7 +11,7 @@ import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
-import SavedJobs from './pages/SavedJobs';
+import Jobs from './pages/Jobs';
 import configureStore from './store/configureStore';
 
 const store = configureStore();
@@ -49,7 +49,7 @@ function App() {
                     <Signin></Signin>
                   </Route>
                   <PrivateRoute path="/jobs">
-                    <SavedJobs></SavedJobs>
+                    <Jobs></Jobs>
                   </PrivateRoute>
                   <Route path="/" exact>
                     <Redirect to={{ pathname: '/jobs' }}></Redirect>

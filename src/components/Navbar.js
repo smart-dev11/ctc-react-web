@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import { useLocation, useHistory } from 'react-router-dom';
+import { Fragment } from 'react';
+import { useHistory } from 'react-router-dom';
 import Input from './Input';
 import Link from './Link';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,7 +9,6 @@ import fp from 'lodash/fp';
 import { logout } from '../store/auth';
 
 export default () => {
-  const location = useLocation();
   const history = useHistory();
   const loggedin = useSelector(fp.get('auth.loggedin'));
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export default () => {
     <div
       sx={{
         display: 'flex',
-        flexDirection: ['column', null, null, 'row'],
+        flexDirection: ['column', 'column', 'row'],
         alignItems: 'center',
         px: [40, 60, 90, 120],
         py: 4,
@@ -37,7 +37,7 @@ export default () => {
           display: 'flex',
           flexDirection: ['column', 'row'],
           alignItems: 'center',
-          width: ['100%', null, null, 'auto']
+          width: ['100%', '100%', 'auto']
         }}
       >
         <img
@@ -52,40 +52,35 @@ export default () => {
             </div>
           }
           placeholder="Find Companies & Connections"
-          sx={{ px: 3, flex: 1, mt: [4, 0], width: ['100%', 'auto'] }}
+          sx={{
+            px: 3,
+            flex: 1,
+            mt: [4, 0],
+            width: ['100%', 'auto'],
+            maxWidth: 545
+          }}
           inputSx={{ py: 2, fontSize: 2 }}
         ></Input>
       </div>
-      {loggedin && (
-        <div
-          sx={{
-            pl: [0, null, null, 10],
-            pt: [4, null, null, 0],
-            width: ['100%', null, null, 'auto'],
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        >
-          <Link
-            to="/jobs"
-            color={location.pathname === '/jobs' ? 'primary' : 'text'}
-          >
-            JOBS
-          </Link>
-          <Link
-            to="/resumes"
-            color={location.pathname === '/resumes' ? 'primary' : 'text'}
-          >
-            RESUMES
-          </Link>
-          <Link onClick={handleLogoutClick}>LOGOUT</Link>
-          <div sx={{ fontSize: 5, color: 'border' }}>
-            <i className="fas fa-user-circle"></i>
-          </div>
-        </div>
-      )}
+      <div
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          mt: [4, 4, 0],
+          ml: [0, 0, 11],
+          width: ['100%', '100%', 'auto']
+        }}
+      >
+        {loggedin && (
+          <Fragment>
+            <Link onClick={handleLogoutClick}>LOGOUT</Link>
+            <div sx={{ fontSize: 5, color: 'border', pl: 6 }}>
+              <i className="fas fa-user-circle"></i>
+            </div>
+          </Fragment>
+        )}
+      </div>
     </div>
   );
 };

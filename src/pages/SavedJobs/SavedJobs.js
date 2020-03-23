@@ -1,9 +1,9 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
+import { jsx, useThemeUI } from 'theme-ui';
 import { useEffect, useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Moment from 'react-moment';
-import Skeleton from 'react-loading-skeleton';
+import HashLoader from 'react-spinners/HashLoader';
 import { getJobs, jobsSelector, GET_JOBS } from '../../store/jobs';
 import {
   positionsSelector,
@@ -20,6 +20,7 @@ import Link from '../../components/Link';
 import Tab from '../../components/Tab';
 
 export default () => {
+  const { theme } = useThemeUI();
   const dispatch = useDispatch();
   const jobs = useSelector(jobsSelector);
   const positions = useSelector(positionsSelector);
@@ -38,7 +39,16 @@ export default () => {
     <Page>
       <PageTitle>Saved Jobs</PageTitle>
       {loading ? (
-        <Skeleton count={10} height={30}></Skeleton>
+        <div
+          sx={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <HashLoader color={theme.colors.primary}></HashLoader>
+        </div>
       ) : (
         <Fragment>
           <div sx={{ mt: 4 }}>

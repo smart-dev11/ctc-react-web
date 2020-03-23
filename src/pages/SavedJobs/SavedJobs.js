@@ -53,18 +53,6 @@ export default () => {
         <Fragment>
           <div
             sx={{
-              py: 2,
-              px: 5,
-              display: 'grid',
-              gridTemplateColumns: '2fr 1fr 120px'
-            }}
-          >
-            <div sx={{ color: 'darkText', fontSize: 3 }}>Position</div>
-            <div sx={{ color: 'darkText', fontSize: 3 }}>Date Applied</div>
-            <div></div>
-          </div>
-          <div
-            sx={{
               boxShadow: 'medium',
               flex: 1,
               backgroundColor: 'white'

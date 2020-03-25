@@ -7,7 +7,8 @@ import { getJobs, jobsSelector, GET_JOBS } from '../../store/jobs';
 import {
   positionsSelector,
   getPositions,
-  GET_POSITIONS
+  GET_POSITIONS,
+  addPosition
 } from '../../store/positions';
 import { createLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
@@ -26,19 +27,27 @@ export default () => {
   const positions = useSelector(positionsSelector);
   const loading = useSelector(createLoadingSelector([GET_JOBS, GET_POSITIONS]));
   const [editId, setEditId] = useState(0);
-  const [text, setText] = useState('');
-  const [selectedId, setSelectedId] = useState(0);
+  const [positionName, setPositionName] = useState('');
+  const [activeId, setActiveId] = useState(0);
 
   useEffect(() => {
     dispatch(getJobs());
     dispatch(getPositions()).then(({ value }) => {
       if (value.length) {
-        setSelectedId(value[0].id);
+        setActiveId(value[0].id);
       }
     });
   }, [dispatch]);
 
-  const savePosition = () => {};
+  const closeEditing = () => {
+    setEditId(0);
+    setPositionName('');
+  };
+
+  const savePosition = async () => {
+    await dispatch(addPosition(positionName));
+    closeEditing();
+  };
 
   return (
     <Page>
@@ -61,17 +70,17 @@ export default () => {
               editId === position.id ? (
                 <EditPosition
                   key={position.id}
-                  position={text}
-                  onPositionChange={setText}
+                  position={positionName}
+                  onPositionChange={setPositionName}
                   onSave={savePosition}
-                  onClose={() => setEditId(0)}
+                  onClose={closeEditing}
                 ></EditPosition>
               ) : (
                 <PositionTab
-                  active={selectedId === position.id}
+                  active={activeId === position.id}
                   key={position.id}
                   position={position}
-                  onClick={() => setSelectedId(position.id)}
+                  onClick={() => setActiveId(position.id)}
                   onEditClick={() => setEditId(position.id)}
                   onRemoveClick={() => {}}
                 ></PositionTab>
@@ -79,10 +88,10 @@ export default () => {
             )}
             {editId < 0 ? (
               <EditPosition
-                position={text}
-                onPositionChange={setText}
+                position={positionName}
+                onPositionChange={setPositionName}
                 onSave={savePosition}
-                onClose={() => setEditId(0)}
+                onClose={closeEditing}
               ></EditPosition>
             ) : (
               <Tab>

@@ -32,7 +32,7 @@ export default produce((draft, action) => {
       draft.byId = _.mapKeys(action.payload, 'id');
       return;
     case `${ADD_POSITION}_${ActionType.Fulfilled}`:
-      draft.byId[action.payload.id] = action.payload.name;
+      draft.byId[action.payload.id] = action.payload;
       return;
     default:
       return;

@@ -9,6 +9,7 @@ import fp from 'lodash/fp';
 export const GET_POSITIONS = 'GET_POSITIONS';
 export const ADD_POSITION = 'ADD_POSITION';
 export const REMOVE_POSITION = 'REMOVE_POSITION';
+export const SAVE_POSITION = 'SAVE_POSITION';
 
 export const getPositions = () => ({
   type: GET_POSITIONS,
@@ -27,6 +28,14 @@ export const removePosition = id => ({
   type: REMOVE_POSITION,
   payload: delay(request.delete(`/positions/${id}`).then(fp.get('data')), 1500),
   meta: { id }
+});
+
+export const savePosition = position => ({
+  type: SAVE_POSITION,
+  payload: delay(
+    request.put(`/positions/${position.id}/`, position).then(fp.get('data')),
+    1500
+  )
 });
 
 const initialState = {

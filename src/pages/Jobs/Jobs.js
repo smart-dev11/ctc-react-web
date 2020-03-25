@@ -7,11 +7,13 @@ import { getJobs, jobsSelector, GET_JOBS } from '../../store/jobs';
 import {
   positionsSelector,
   getPositions,
-  GET_POSITIONS,
   addPosition,
   removePosition,
+  savePosition,
+  GET_POSITIONS,
   ADD_POSITION,
-  REMOVE_POSITION
+  REMOVE_POSITION,
+  SAVE_POSITION
 } from '../../store/positions';
 import { createLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
@@ -31,7 +33,7 @@ export default () => {
   const positions = useSelector(positionsSelector);
   const loading = useSelector(createLoadingSelector([GET_JOBS, GET_POSITIONS]));
   const positionCrudLoading = useSelector(
-    createLoadingSelector([ADD_POSITION, REMOVE_POSITION])
+    createLoadingSelector([ADD_POSITION, REMOVE_POSITION, SAVE_POSITION])
   );
   const [editId, setEditId] = useState(0);
   const [positionName, setPositionName] = useState('');
@@ -49,11 +51,6 @@ export default () => {
   const closeEditing = () => {
     setEditId(0);
     setPositionName('');
-  };
-
-  const savePosition = async () => {
-    await dispatch(addPosition(positionName));
-    closeEditing();
   };
 
   return (
@@ -80,7 +77,12 @@ export default () => {
                     key={position.id}
                     position={positionName}
                     onPositionChange={setPositionName}
-                    onSave={savePosition}
+                    onSave={async () => {
+                      await dispatch(
+                        savePosition({ ...position, name: positionName })
+                      );
+                      closeEditing();
+                    }}
                     onClose={closeEditing}
                   ></EditPosition>
                 ) : (
@@ -89,8 +91,15 @@ export default () => {
                     key={position.id}
                     position={position}
                     onClick={() => setActiveId(position.id)}
-                    onEditClick={() => setEditId(position.id)}
-                    onRemoveClick={() => dispatch(removePosition(position.id))}
+                    onEditClick={() => {
+                      setEditId(position.id);
+                      setPositionName(position.name);
+                    }}
+                    onRemoveClick={() =>
+                      window.confirm(
+                        `Are you sure to delete ${position.name}?`
+                      ) && dispatch(removePosition(position.id))
+                    }
                   ></PositionTab>
                 )
               )}
@@ -98,7 +107,10 @@ export default () => {
                 <EditPosition
                   position={positionName}
                   onPositionChange={setPositionName}
-                  onSave={savePosition}
+                  onSave={async () => {
+                    await dispatch(addPosition(positionName));
+                    closeEditing();
+                  }}
                   onClose={closeEditing}
                 ></EditPosition>
               ) : (

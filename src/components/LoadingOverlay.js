@@ -5,6 +5,7 @@ import LoadingOverlay from 'react-loading-overlay';
 export default ({
   loading,
   overlayColor = 'rgba(255, 255, 255, 0.7)',
+  spinner = true,
   children,
   ...props
 }) => {
@@ -12,7 +13,7 @@ export default ({
   return (
     <LoadingOverlay
       active={loading}
-      spinner
+      spinner={spinner}
       fadeSpeed={200}
       styles={{
         overlay: base => ({

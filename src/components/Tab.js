@@ -11,7 +11,9 @@ export default ({ children, active, ...props }) => {
         px: 3,
         fontSize: 2,
         cursor: 'pointer',
-        borderBottom: active ? `2px solid ${theme.colors.primary}` : 0
+        borderBottom: active
+          ? `2px solid ${theme.colors.primary}`
+          : `2px solid transparent`
       }}
       {...props}
     >

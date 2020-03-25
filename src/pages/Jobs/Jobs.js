@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState, Fragment, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import HashLoader from 'react-spinners/HashLoader';
 import { getJobs, jobsSelector, GET_JOBS } from '../../store/jobs';
@@ -25,13 +25,18 @@ export default () => {
   const jobs = useSelector(jobsSelector);
   const positions = useSelector(positionsSelector);
   const loading = useSelector(createLoadingSelector([GET_JOBS, GET_POSITIONS]));
-  const [editingIndex, setEditingIndex] = useState(0);
-  const [positionName, setPositionName] = useState('');
-  const [tabIndex, setTabIndex] = useState(0);
+  const [editId, setEditId] = useState(0);
+  const [text, setText] = useState('');
+  const [selectedId, setSelectedId] = useState(0);
+  const editRef = useRef();
 
   useEffect(() => {
     dispatch(getJobs());
-    dispatch(getPositions());
+    dispatch(getPositions()).then(({ value }) => {
+      if (value.length) {
+        setSelectedId(value[0].id);
+      }
+    });
   }, [dispatch]);
 
   const savePosition = () => {};
@@ -53,25 +58,56 @@ export default () => {
       ) : (
         <Fragment>
           <div sx={{ mt: 4 }}>
-            {positions.map((position, index) => (
-              <PositionTab
-                active={tabIndex === index}
-                key={position.id}
-                position={position}
-                onClick={() => setTabIndex(index)}
-              ></PositionTab>
-            ))}
-            {editingIndex < 0 ? (
+            {positions.map(position =>
+              editId === position.id ? (
+                <EditPosition
+                  key={position.id}
+                  position={text}
+                  onPositionChange={setText}
+                  onSave={savePosition}
+                  onClose={() => setEditId(0)}
+                  ref={editRef}
+                ></EditPosition>
+              ) : (
+                <PositionTab
+                  sx={{ opacity: editId === 0 ? 1 : 0.5 }}
+                  active={selectedId === position.id}
+                  key={position.id}
+                  position={position}
+                  onClick={() => {
+                    if (editId !== 0) {
+                      return;
+                    }
+                    if (selectedId === position.id) {
+                      setEditId(position.id);
+                    } else {
+                      setSelectedId(position.id);
+                    }
+                  }}
+                ></PositionTab>
+              )
+            )}
+            {editId < 0 ? (
               <EditPosition
-                position={positionName}
-                onPositionChange={setPositionName}
+                ref={editRef}
+                position={text}
+                onPositionChange={setText}
                 onSave={savePosition}
-                onClose={() => setEditingIndex(0)}
+                onClose={() => setEditId(0)}
               ></EditPosition>
             ) : (
               <Tab>
-                <Link color="primary" onClick={() => setEditingIndex(-1)}>
-                  <i className="fas fa-plus" sx={{ mr: 1 }}></i> Add Position
+                <Link
+                  color="primary"
+                  onClick={() => {
+                    if (editId !== 0) {
+                      return;
+                    }
+                    setEditId(-1);
+                  }}
+                  disabled={editId !== 0}
+                >
+                  Add Position
                 </Link>
               </Tab>
             )}

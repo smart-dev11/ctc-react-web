@@ -8,7 +8,8 @@ import {
   positionsSelector,
   getPositions,
   GET_POSITIONS,
-  addPosition
+  addPosition,
+  removePosition
 } from '../../store/positions';
 import { createLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
@@ -65,7 +66,7 @@ export default () => {
         </div>
       ) : (
         <Fragment>
-          <div sx={{ mt: 4 }}>
+          <div sx={{ mt: 4, display: 'flex', alignItems: 'center' }}>
             {positions.map(position =>
               editId === position.id ? (
                 <EditPosition
@@ -82,7 +83,7 @@ export default () => {
                   position={position}
                   onClick={() => setActiveId(position.id)}
                   onEditClick={() => setEditId(position.id)}
-                  onRemoveClick={() => {}}
+                  onRemoveClick={() => dispatch(removePosition(position.id))}
                 ></PositionTab>
               )
             )}

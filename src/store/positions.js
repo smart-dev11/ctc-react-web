@@ -8,31 +8,41 @@ import fp from 'lodash/fp';
 
 export const GET_POSITIONS = 'GET_POSITIONS';
 export const ADD_POSITION = 'ADD_POSITION';
+export const REMOVE_POSITION = 'REMOVE_POSITION';
 
 export const getPositions = () => ({
   type: GET_POSITIONS,
   payload: delay(request.get('/positions/').then(fp.get('data')), 1500)
 });
 
-export const addPosition = positionName => ({
+export const addPosition = name => ({
   type: ADD_POSITION,
   payload: delay(
-    request.post('/positions/', { name: positionName }).then(fp.get('data')),
+    request.post('/positions/', { name }).then(fp.get('data')),
     1500
   )
+});
+
+export const removePosition = id => ({
+  type: REMOVE_POSITION,
+  payload: delay(request.delete(`/positions/${id}`).then(fp.get('data')), 1500),
+  meta: { id }
 });
 
 const initialState = {
   byId: {}
 };
 
-export default produce((draft, action) => {
-  switch (action.type) {
+export default produce((draft, { type, payload, meta }) => {
+  switch (type) {
     case `${GET_POSITIONS}_${ActionType.Fulfilled}`:
-      draft.byId = _.mapKeys(action.payload, 'id');
+      draft.byId = _.mapKeys(payload, 'id');
       return;
     case `${ADD_POSITION}_${ActionType.Fulfilled}`:
-      draft.byId[action.payload.id] = action.payload;
+      draft.byId[payload.id] = payload;
+      return;
+    case `${REMOVE_POSITION}_${ActionType.Fulfilled}`:
+      delete draft.byId[meta.id];
       return;
     default:
       return;

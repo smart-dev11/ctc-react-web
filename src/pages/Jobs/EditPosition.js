@@ -16,7 +16,7 @@ export default ({ position, onPositionChange, onSave, onClose }) => (
     <Input
       value={position}
       onChange={e => onPositionChange(e.target.value)}
-      inputSx={{ py: 2 }}
+      inputSx={{ py: 1 }}
       sx={{ width: 180 }}
     ></Input>
     <Link onClick={onSave} color="primary" sx={{ fontSize: 3 }}>

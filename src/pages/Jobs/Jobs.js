@@ -48,11 +48,6 @@ export default () => {
     });
   }, [dispatch]);
 
-  const closeEditing = () => {
-    setEditId(0);
-    setPositionName('');
-  };
-
   return (
     <Page>
       <PageTitle>Saved Jobs</PageTitle>
@@ -81,9 +76,9 @@ export default () => {
                       await dispatch(
                         savePosition({ ...position, name: positionName })
                       );
-                      closeEditing();
+                      setEditId(0);
                     }}
-                    onClose={closeEditing}
+                    onClose={() => setEditId(0)}
                   ></EditPosition>
                 ) : (
                   <PositionTab
@@ -109,13 +104,20 @@ export default () => {
                   onPositionChange={setPositionName}
                   onSave={async () => {
                     await dispatch(addPosition(positionName));
-                    closeEditing();
+                    setEditId(0);
                   }}
-                  onClose={closeEditing}
+                  onClose={() => setEditId(0)}
                 ></EditPosition>
               ) : (
                 <Tab>
-                  <Link color="primary" onClick={() => setEditId(-1)}>
+                  <Link
+                    color="primary"
+                    onClick={() => {
+                      setEditId(-1);
+
+                      setPositionName('');
+                    }}
+                  >
                     <i className="fas fa-plus"></i> Add Position
                   </Link>
                 </Tab>

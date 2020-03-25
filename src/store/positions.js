@@ -53,6 +53,9 @@ export default produce((draft, { type, payload, meta }) => {
     case `${REMOVE_POSITION}_${ActionType.Fulfilled}`:
       delete draft.byId[meta.id];
       return;
+    case `${SAVE_POSITION}_${ActionType.Fulfilled}`:
+      draft.byId[payload.id] = payload;
+      return;
     default:
       return;
   }

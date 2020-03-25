@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
-import { useEffect, useState, Fragment, useRef } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import HashLoader from 'react-spinners/HashLoader';
 import { getJobs, jobsSelector, GET_JOBS } from '../../store/jobs';
@@ -28,7 +28,6 @@ export default () => {
   const [editId, setEditId] = useState(0);
   const [text, setText] = useState('');
   const [selectedId, setSelectedId] = useState(0);
-  const editRef = useRef();
 
   useEffect(() => {
     dispatch(getJobs());
@@ -66,30 +65,20 @@ export default () => {
                   onPositionChange={setText}
                   onSave={savePosition}
                   onClose={() => setEditId(0)}
-                  ref={editRef}
                 ></EditPosition>
               ) : (
                 <PositionTab
-                  sx={{ opacity: editId === 0 ? 1 : 0.5 }}
                   active={selectedId === position.id}
                   key={position.id}
                   position={position}
-                  onClick={() => {
-                    if (editId !== 0) {
-                      return;
-                    }
-                    if (selectedId === position.id) {
-                      setEditId(position.id);
-                    } else {
-                      setSelectedId(position.id);
-                    }
-                  }}
+                  onClick={() => setSelectedId(position.id)}
+                  onEditClick={() => setEditId(position.id)}
+                  onRemoveClick={() => {}}
                 ></PositionTab>
               )
             )}
             {editId < 0 ? (
               <EditPosition
-                ref={editRef}
                 position={text}
                 onPositionChange={setText}
                 onSave={savePosition}
@@ -97,17 +86,8 @@ export default () => {
               ></EditPosition>
             ) : (
               <Tab>
-                <Link
-                  color="primary"
-                  onClick={() => {
-                    if (editId !== 0) {
-                      return;
-                    }
-                    setEditId(-1);
-                  }}
-                  disabled={editId !== 0}
-                >
-                  Add Position
+                <Link color="primary" onClick={() => setEditId(-1)}>
+                  <i className="fas fa-plus"></i> Add Position
                 </Link>
               </Tab>
             )}

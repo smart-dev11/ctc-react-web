@@ -3,7 +3,6 @@ import { jsx, useThemeUI } from 'theme-ui';
 import { useEffect, useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import HashLoader from 'react-spinners/HashLoader';
-import { getJobs, jobsSelector, GET_JOBS } from '../../store/jobs';
 import {
   positionsSelector,
   getPositions,
@@ -13,7 +12,8 @@ import {
   GET_POSITIONS,
   ADD_POSITION,
   REMOVE_POSITION,
-  SAVE_POSITION
+  SAVE_POSITION,
+  createJobsByPositionIdSelector
 } from '../../store/positions';
 import { createLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
@@ -29,18 +29,19 @@ import Job from './Job';
 export default () => {
   const { theme } = useThemeUI();
   const dispatch = useDispatch();
-  const jobs = useSelector(jobsSelector);
   const positions = useSelector(positionsSelector);
-  const loading = useSelector(createLoadingSelector([GET_JOBS, GET_POSITIONS]));
+  const loading = useSelector(createLoadingSelector([GET_POSITIONS]));
   const positionCrudLoading = useSelector(
     createLoadingSelector([ADD_POSITION, REMOVE_POSITION, SAVE_POSITION])
   );
   const [editId, setEditId] = useState(0);
   const [positionName, setPositionName] = useState('');
   const [activeId, setActiveId] = useState(0);
+  const jobs = useSelector(createJobsByPositionIdSelector(activeId));
+
+  console.log(jobs);
 
   useEffect(() => {
-    dispatch(getJobs());
     dispatch(getPositions()).then(({ value }) => {
       if (value.length) {
         setActiveId(value[0].id);
@@ -74,7 +75,7 @@ export default () => {
                     onPositionChange={setPositionName}
                     onSave={async () => {
                       await dispatch(
-                        savePosition({ ...position, name: positionName })
+                        savePosition({ id: position.id, name: positionName })
                       );
                       setEditId(0);
                     }}
@@ -92,8 +93,13 @@ export default () => {
                     }}
                     onRemoveClick={() =>
                       window.confirm(
-                        `Are you sure to delete ${position.name}?`
-                      ) && dispatch(removePosition(position.id))
+                        `Are you sure to remove ${position.name}?`
+                      ) &&
+                      dispatch(removePosition(position.id)).then(() => {
+                        if (activeId === position.id && positions.length > 1) {
+                          setActiveId(positions[0].id);
+                        }
+                      })
                     }
                   ></PositionTab>
                 )
@@ -109,16 +115,16 @@ export default () => {
                   onClose={() => setEditId(0)}
                 ></EditPosition>
               ) : (
-                <Tab>
+                <Tab active={positions.length === 0}>
                   <Link
                     color="primary"
                     onClick={() => {
                       setEditId(-1);
-
                       setPositionName('');
                     }}
                   >
-                    <i className="fas fa-plus"></i> Add Position
+                    <i className="fas fa-plus"></i>
+                    {positions.length ? '' : ' Add Position'}
                   </Link>
                 </Tab>
               )}

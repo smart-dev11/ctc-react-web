@@ -38,23 +38,28 @@ export const savePosition = position => ({
   )
 });
 
-const initialState = {
-  byId: {}
-};
+const initialState = {};
 
 export default produce((draft, { type, payload, meta }) => {
   switch (type) {
     case `${GET_POSITIONS}_${ActionType.Fulfilled}`:
-      draft.byId = _.mapKeys(payload, 'id');
+      payload.forEach(position => {
+        draft[position.id] = _.omit(position, ['jobs']);
+        draft[position.id].jobs = {};
+        position.jobs.forEach(job => {
+          draft[position.id].jobs[job.id] = job;
+        });
+      });
       return;
     case `${ADD_POSITION}_${ActionType.Fulfilled}`:
-      draft.byId[payload.id] = payload;
+      draft[payload.id] = payload;
+      draft[payload.id].jobs = {};
       return;
     case `${REMOVE_POSITION}_${ActionType.Fulfilled}`:
-      delete draft.byId[meta.id];
+      delete draft[meta.id];
       return;
     case `${SAVE_POSITION}_${ActionType.Fulfilled}`:
-      draft.byId[payload.id] = payload;
+      draft[payload.id].name = payload.name;
       return;
     default:
       return;
@@ -62,6 +67,13 @@ export default produce((draft, { type, payload, meta }) => {
 }, initialState);
 
 export const positionsSelector = createSelector(
-  fp.get('positions.byId'),
-  fp.values
+  fp.get('positions'),
+  positions =>
+    Object.values(positions).map(position => ({
+      ...position,
+      jobs: Object.values(position.jobs)
+    }))
 );
+
+export const createJobsByPositionIdSelector = positionId =>
+  fp.compose(fp.values, fp.getOr({}, `positions.${positionId}.jobs`));

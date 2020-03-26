@@ -3,14 +3,14 @@ import { jsx } from 'theme-ui';
 import Moment from 'react-moment';
 import Link from '../../components/Link';
 
-export default ({ job, ...props }) => {
+export default ({ job, onRemoveClick, ...props }) => {
   return (
     <div
       key={job.id}
       sx={{
         p: 5,
         display: 'grid',
-        gridTemplateColumns: '2fr 1fr 120px',
+        gridTemplateColumns: '2fr 1fr auto',
         alignItems: 'center'
       }}
       {...props}
@@ -45,15 +45,26 @@ export default ({ job, ...props }) => {
       <div
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'auto auto',
-          gridGap: 6,
+          gridTemplateColumns: 'repeat(4, auto)',
+          gridGap: 4,
           justifyContent: 'center'
         }}
       >
         <Link>
+          <i className="fas fa-upload"></i>
+        </Link>
+        <Link>
           <i className="fas fa-pen"></i>
         </Link>
         <Link>
+          <i className="fas fa-download"></i>
+        </Link>
+        <Link
+          onClick={() =>
+            window.confirm(`Are you user to remove ${job.title}`) &&
+            onRemoveClick()
+          }
+        >
           <i className="fas fa-trash"></i>
         </Link>
       </div>

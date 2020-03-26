@@ -19,10 +19,10 @@ export default ({ position, onPositionChange, onSave, onClose }) => (
       inputSx={{ py: 2 }}
       sx={{ width: 200 }}
     ></Input>
-    <Link onClick={onSave} color="primary" sx={{ fontSize: 3 }}>
+    <Link onClick={onSave} color="text" sx={{ fontSize: 3 }}>
       <i className="fas fa-save"></i>
     </Link>
-    <Link onClick={onClose} color="primary" sx={{ fontSize: 3 }}>
+    <Link onClick={onClose} color="text" sx={{ fontSize: 3 }}>
       <i className="fas fa-times"></i>
     </Link>
   </div>

@@ -12,15 +12,18 @@ export default ({ position, active, onEditClick, onRemoveClick, ...props }) => {
           {position.name}
           <Link
             onClick={onEditClick}
-            color={isHovering ? 'primary' : 'border'}
-            sx={{ ml: 1 }}
+            color={isHovering ? 'text' : 'border'}
+            sx={{ ml: 2 }}
           >
             <i className="fas fa-pen"></i>
           </Link>
           <Link
-            onClick={onRemoveClick}
-            color={isHovering ? 'primary' : 'border'}
-            sx={{ ml: 1 }}
+            onClick={() =>
+              window.confirm(`Are you sure to remove ${position.name}?`) &&
+              onRemoveClick()
+            }
+            color={isHovering ? 'text' : 'border'}
+            sx={{ ml: 2 }}
           >
             <i className="fas fa-trash"></i>
           </Link>

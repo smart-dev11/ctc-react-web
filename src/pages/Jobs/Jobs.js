@@ -39,8 +39,6 @@ export default () => {
   const [activeId, setActiveId] = useState(0);
   const jobs = useSelector(createJobsByPositionIdSelector(activeId));
 
-  console.log(jobs);
-
   useEffect(() => {
     dispatch(getPositions()).then(({ value }) => {
       if (value.length) {
@@ -92,9 +90,6 @@ export default () => {
                       setPositionName(position.name);
                     }}
                     onRemoveClick={() =>
-                      window.confirm(
-                        `Are you sure to remove ${position.name}?`
-                      ) &&
                       dispatch(removePosition(position.id)).then(() => {
                         if (activeId === position.id && positions.length > 1) {
                           setActiveId(positions[0].id);
@@ -130,7 +125,6 @@ export default () => {
               )}
             </div>
           </LoadingOverlay>
-
           {jobs.length > 0 ? (
             <div
               sx={{
@@ -147,6 +141,7 @@ export default () => {
                     borderTop: index > 0 ? '1px solid' : '',
                     borderTopColor: 'border'
                   }}
+                  onRemoveClick={() => alert('Not implemented yet')}
                 ></Job>
               ))}
             </div>

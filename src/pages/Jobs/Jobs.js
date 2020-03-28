@@ -13,7 +13,9 @@ import {
   ADD_POSITION,
   REMOVE_POSITION,
   SAVE_POSITION,
-  createJobsByPositionIdSelector
+  REMOVE_JOB,
+  createJobsByPositionIdSelector,
+  removeJob
 } from '../../store/positions';
 import { createLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
@@ -30,19 +32,22 @@ export default () => {
   const { theme } = useThemeUI();
   const dispatch = useDispatch();
   const positions = useSelector(positionsSelector);
-  const loading = useSelector(createLoadingSelector([GET_POSITIONS]));
-  const positionCrudLoading = useSelector(
+  const pageLoading = useSelector(createLoadingSelector([GET_POSITIONS]));
+  const positionsLoading = useSelector(
     createLoadingSelector([ADD_POSITION, REMOVE_POSITION, SAVE_POSITION])
   );
-  const [editId, setEditId] = useState(0);
+  const jobsLoading = useSelector(
+    createLoadingSelector([REMOVE_JOB, REMOVE_POSITION])
+  );
+  const [editPositionId, setEditPositionId] = useState(0);
   const [positionName, setPositionName] = useState('');
-  const [activeId, setActiveId] = useState(0);
-  const jobs = useSelector(createJobsByPositionIdSelector(activeId));
+  const [selectedPositionId, setSelectedPositionId] = useState(0);
+  const jobs = useSelector(createJobsByPositionIdSelector(selectedPositionId));
 
   useEffect(() => {
     dispatch(getPositions()).then(({ value }) => {
       if (value.length) {
-        setActiveId(value[0].id);
+        setSelectedPositionId(value[0].id);
       }
     });
   }, [dispatch]);
@@ -50,7 +55,7 @@ export default () => {
   return (
     <Page>
       <PageTitle>Saved Jobs</PageTitle>
-      {loading ? (
+      {pageLoading ? (
         <div
           sx={{
             flex: 1,
@@ -63,10 +68,10 @@ export default () => {
         </div>
       ) : (
         <Fragment>
-          <LoadingOverlay loading={positionCrudLoading} spinner={false}>
+          <LoadingOverlay loading={positionsLoading} spinner={false}>
             <div sx={{ mt: 4, display: 'flex', alignItems: 'center' }}>
               {positions.map(position =>
-                editId === position.id ? (
+                editPositionId === position.id ? (
                   <EditPosition
                     key={position.id}
                     position={positionName}
@@ -75,46 +80,49 @@ export default () => {
                       await dispatch(
                         savePosition({ id: position.id, name: positionName })
                       );
-                      setEditId(0);
+                      setEditPositionId(0);
                     }}
-                    onClose={() => setEditId(0)}
+                    onClose={() => setEditPositionId(0)}
                   ></EditPosition>
                 ) : (
                   <PositionTab
-                    active={activeId === position.id}
+                    active={selectedPositionId === position.id}
                     key={position.id}
                     position={position}
-                    onClick={() => setActiveId(position.id)}
+                    onClick={() => setSelectedPositionId(position.id)}
                     onEditClick={() => {
-                      setEditId(position.id);
+                      setEditPositionId(position.id);
                       setPositionName(position.name);
                     }}
                     onRemoveClick={() =>
                       dispatch(removePosition(position.id)).then(() => {
-                        if (activeId === position.id && positions.length > 1) {
-                          setActiveId(positions[0].id);
+                        if (
+                          selectedPositionId === position.id &&
+                          positions.length > 1
+                        ) {
+                          setSelectedPositionId(positions[0].id);
                         }
                       })
                     }
                   ></PositionTab>
                 )
               )}
-              {editId < 0 ? (
+              {editPositionId < 0 ? (
                 <EditPosition
                   position={positionName}
                   onPositionChange={setPositionName}
                   onSave={async () => {
                     await dispatch(addPosition(positionName));
-                    setEditId(0);
+                    setEditPositionId(0);
                   }}
-                  onClose={() => setEditId(0)}
+                  onClose={() => setEditPositionId(0)}
                 ></EditPosition>
               ) : (
                 <Tab active={positions.length === 0}>
                   <Link
                     color="primary"
                     onClick={() => {
-                      setEditId(-1);
+                      setEditPositionId(-1);
                       setPositionName('');
                     }}
                   >
@@ -126,25 +134,29 @@ export default () => {
             </div>
           </LoadingOverlay>
           {jobs.length > 0 ? (
-            <div
-              sx={{
-                boxShadow: 'medium',
-                flex: 1,
-                backgroundColor: 'white'
-              }}
-            >
-              {jobs.map((job, index) => (
-                <Job
-                  key={job.id}
-                  job={job}
-                  sx={{
-                    borderTop: index > 0 ? '1px solid' : '',
-                    borderTopColor: 'border'
-                  }}
-                  onRemoveClick={() => alert('Not implemented yet')}
-                ></Job>
-              ))}
-            </div>
+            <LoadingOverlay loading={jobsLoading}>
+              <div
+                sx={{
+                  boxShadow: 'medium',
+                  flex: 1,
+                  backgroundColor: 'white'
+                }}
+              >
+                {jobs.map((job, index) => (
+                  <Job
+                    key={job.id}
+                    job={job}
+                    sx={{
+                      borderTop: index > 0 ? '1px solid' : '',
+                      borderTopColor: 'border'
+                    }}
+                    onRemoveClick={() =>
+                      dispatch(removeJob(selectedPositionId, job.id))
+                    }
+                  ></Job>
+                ))}
+              </div>
+            </LoadingOverlay>
           ) : (
             <NoJobs></NoJobs>
           )}

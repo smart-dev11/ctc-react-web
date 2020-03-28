@@ -27,6 +27,7 @@ import Link from '../../components/Link';
 import Tab from '../../components/Tab';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import Job from './Job';
+import ResumeUpload from './ResumeUpload';
 
 export default () => {
   const { theme } = useThemeUI();
@@ -42,6 +43,7 @@ export default () => {
   const [editPositionId, setEditPositionId] = useState(0);
   const [positionName, setPositionName] = useState('');
   const [selectedPositionId, setSelectedPositionId] = useState(0);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const jobs = useSelector(createJobsByPositionIdSelector(selectedPositionId));
 
   useEffect(() => {
@@ -153,6 +155,7 @@ export default () => {
                     onRemoveClick={() =>
                       dispatch(removeJob(selectedPositionId, job.id))
                     }
+                    onUploadClick={() => setIsUploadOpen(true)}
                   ></Job>
                 ))}
               </div>
@@ -162,6 +165,10 @@ export default () => {
           )}
         </Fragment>
       )}
+      <ResumeUpload
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+      ></ResumeUpload>
     </Page>
   );
 };

@@ -3,7 +3,7 @@ import { jsx } from 'theme-ui';
 import Moment from 'react-moment';
 import Link from '../../components/Link';
 
-export default ({ job, onRemoveClick, ...props }) => {
+export default ({ job, onRemoveClick, onUploadClick, ...props }) => {
   return (
     <div
       key={job.id}
@@ -50,7 +50,7 @@ export default ({ job, onRemoveClick, ...props }) => {
           justifyContent: 'center'
         }}
       >
-        <Link>
+        <Link onClick={onUploadClick}>
           <i className="fas fa-upload"></i>
         </Link>
         <Link>

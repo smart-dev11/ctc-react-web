@@ -8,8 +8,8 @@ import Button from '../components/Button';
 import SocialContainer from '../components/SocialContainer';
 import Page from '../components/Page';
 import Error from '../components/Error';
-import { createLoadingSelector } from '../store/loading';
-import { createErrorSelector } from '../store/error';
+import { makeLoadingSelector } from '../store/loading';
+import { makeErrorSelector } from '../store/error';
 import { LOGIN, login } from '../store/auth';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { useHistory } from 'react-router-dom';
@@ -17,8 +17,8 @@ import { useHistory } from 'react-router-dom';
 export default () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const loading = useSelector(createLoadingSelector([LOGIN]));
-  const error = useSelector(createErrorSelector([LOGIN]));
+  const loading = useSelector(makeLoadingSelector([LOGIN]));
+  const error = useSelector(makeErrorSelector([LOGIN]));
 
   const { handleSubmit, getFieldProps, touched, errors } = useFormik({
     initialValues: {

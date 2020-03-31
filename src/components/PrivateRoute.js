@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import fp from 'lodash/fp';
 import { Route, Redirect } from 'react-router-dom';
 
-export default ({ children }) => {
+export default ({ children, ...props }) => {
   const loggedin = useSelector(fp.get('auth.loggedin'));
   return (
-    <Route>
+    <Route {...props}>
       {loggedin ? children : <Redirect to={{ pathname: '/signup' }}></Redirect>}
     </Route>
   );

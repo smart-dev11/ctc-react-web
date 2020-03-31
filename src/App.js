@@ -12,6 +12,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import Jobs from './pages/Jobs';
+import ResumeStudio from './pages/ResumeStudio';
 import configureStore from './store/configureStore';
 
 const store = configureStore();
@@ -48,6 +49,9 @@ function App() {
                   <Route path="/signin">
                     <Signin></Signin>
                   </Route>
+                  <PrivateRoute path="/jobs/:id/resume-studio">
+                    <ResumeStudio></ResumeStudio>
+                  </PrivateRoute>
                   <PrivateRoute path="/jobs">
                     <Jobs></Jobs>
                   </PrivateRoute>

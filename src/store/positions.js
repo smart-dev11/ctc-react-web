@@ -11,6 +11,7 @@ export const ADD_POSITION = 'ADD_POSITION';
 export const REMOVE_POSITION = 'REMOVE_POSITION';
 export const SAVE_POSITION = 'SAVE_POSITION';
 export const REMOVE_JOB = 'REMOVE_JOB';
+export const UPLOAD_RESUME = 'UPLOAD_RESUME';
 
 export const getPositions = () => ({
   type: GET_POSITIONS,
@@ -44,6 +45,15 @@ export const removeJob = (positionId, jobId) => ({
   payload: delay(request.delete(`/jobs/${jobId}`), 1500),
   meta: { positionId, jobId }
 });
+
+export const uploadResume = (jobId, file) => {
+  const formData = new FormData();
+  formData.append('resume', file);
+  return {
+    type: UPLOAD_RESUME,
+    payload: delay(request.put(`/jobs/${jobId}/resume_upload/`, formData), 1500)
+  };
+};
 
 const initialState = {};
 
@@ -85,5 +95,5 @@ export const positionsSelector = createSelector(
     }))
 );
 
-export const createJobsByPositionIdSelector = positionId =>
+export const makeJobsSelector = positionId =>
   fp.compose(fp.values, fp.getOr({}, `positions.${positionId}.jobs`));

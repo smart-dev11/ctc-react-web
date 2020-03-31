@@ -2,6 +2,7 @@
 import { jsx, useThemeUI } from 'theme-ui';
 import { useEffect, useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import HashLoader from 'react-spinners/HashLoader';
 import {
   positionsSelector,
@@ -14,10 +15,12 @@ import {
   REMOVE_POSITION,
   SAVE_POSITION,
   REMOVE_JOB,
-  createJobsByPositionIdSelector,
-  removeJob
+  UPLOAD_RESUME,
+  makeJobsSelector,
+  removeJob,
+  uploadResume
 } from '../../store/positions';
-import { createLoadingSelector } from '../../store/loading';
+import { makeLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
 import EditPosition from './EditPosition';
 import PositionTab from './PositionTab';
@@ -31,20 +34,22 @@ import ResumeUpload from './ResumeUpload';
 
 export default () => {
   const { theme } = useThemeUI();
+  const history = useHistory();
   const dispatch = useDispatch();
   const positions = useSelector(positionsSelector);
-  const pageLoading = useSelector(createLoadingSelector([GET_POSITIONS]));
+  const pageLoading = useSelector(makeLoadingSelector([GET_POSITIONS]));
   const positionsLoading = useSelector(
-    createLoadingSelector([ADD_POSITION, REMOVE_POSITION, SAVE_POSITION])
+    makeLoadingSelector([ADD_POSITION, REMOVE_POSITION, SAVE_POSITION])
   );
   const jobsLoading = useSelector(
-    createLoadingSelector([REMOVE_JOB, REMOVE_POSITION])
+    makeLoadingSelector([REMOVE_JOB, REMOVE_POSITION, UPLOAD_RESUME])
   );
   const [editPositionId, setEditPositionId] = useState(0);
   const [positionName, setPositionName] = useState('');
   const [selectedPositionId, setSelectedPositionId] = useState(0);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
-  const jobs = useSelector(createJobsByPositionIdSelector(selectedPositionId));
+  const [uploadJobId, setUploadJobId] = useState(0);
+  const jobs = useSelector(makeJobsSelector(selectedPositionId));
 
   useEffect(() => {
     dispatch(getPositions()).then(({ value }) => {
@@ -71,7 +76,7 @@ export default () => {
       ) : (
         <Fragment>
           <LoadingOverlay loading={positionsLoading} spinner={false}>
-            <div sx={{ mt: 4, display: 'flex', alignItems: 'center' }}>
+            <div sx={{ display: 'flex', alignItems: 'center' }}>
               {positions.map(position =>
                 editPositionId === position.id ? (
                   <EditPosition
@@ -155,7 +160,13 @@ export default () => {
                     onRemoveClick={() =>
                       dispatch(removeJob(selectedPositionId, job.id))
                     }
-                    onUploadClick={() => setIsUploadOpen(true)}
+                    onUploadClick={() => {
+                      setIsUploadOpen(true);
+                      setUploadJobId(job.id);
+                    }}
+                    onEditClick={() =>
+                      history.push(`/jobs/${job.id}/resume-studio`)
+                    }
                   ></Job>
                 ))}
               </div>
@@ -168,6 +179,10 @@ export default () => {
       <ResumeUpload
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
+        onUpload={file => {
+          dispatch(uploadResume(uploadJobId, file));
+          setIsUploadOpen(false);
+        }}
       ></ResumeUpload>
     </Page>
   );

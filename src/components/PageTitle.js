@@ -6,7 +6,9 @@ export default ({ children, ...props }) => (
     sx={{
       color: 'text',
       fontSize: 5,
-      fontWeight: 'normal'
+      fontWeight: 'normal',
+      mt: 0,
+      mb: 5
     }}
     {...props}
   >

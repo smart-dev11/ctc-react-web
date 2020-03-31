@@ -13,5 +13,5 @@ export default (state = {}, action) => {
   };
 };
 
-export const createLoadingSelector = actions => state =>
+export const makeLoadingSelector = actions => state =>
   _(actions).some(action => _.get(state, `loading.${action}`));

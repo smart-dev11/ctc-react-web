@@ -13,16 +13,22 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    padding: 0
+    padding: 0,
+    border: 'none',
+    borderRadius: 0
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    zIndex: 2
   }
 };
 
-export default ({ isOpen, onClose }) => {
+export default ({ isOpen, onClose, onUpload }) => {
   const [fileName, setFileName] = useState('');
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: files => {
       if (!files.length) return;
-      setFileName(files[0].name);
+      onUpload(files[0]);
     }
   });
   return (

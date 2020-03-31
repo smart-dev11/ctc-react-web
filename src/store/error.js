@@ -13,7 +13,7 @@ export default (state = {}, action) => {
   };
 };
 
-export const createErrorSelector = actions => state => {
+export const makeErrorSelector = actions => state => {
   return (
     _(actions)
       .map(action => _.get(state, `error.${action}`))

@@ -9,16 +9,16 @@ import Button from '../components/Button';
 import Page from '../components/Page';
 import Error from '../components/Error';
 import { register, REGISTER } from '../store/auth';
-import { createLoadingSelector } from '../store/loading';
-import { createErrorSelector } from '../store/error';
+import { makeLoadingSelector } from '../store/loading';
+import { makeErrorSelector } from '../store/error';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { useHistory } from 'react-router-dom';
 
 export default () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const loading = useSelector(createLoadingSelector([REGISTER]));
-  const error = useSelector(createErrorSelector([REGISTER]));
+  const loading = useSelector(makeLoadingSelector([REGISTER]));
+  const error = useSelector(makeErrorSelector([REGISTER]));
 
   const { handleSubmit, getFieldProps, touched, errors } = useFormik({
     initialValues: {

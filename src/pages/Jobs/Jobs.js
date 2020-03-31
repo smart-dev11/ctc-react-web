@@ -165,7 +165,7 @@ export default () => {
                       setUploadJobId(job.id);
                     }}
                     onEditClick={() =>
-                      history.push(`/jobs/${job.id}/resume-studio`)
+                      history.push(`/${selectedPositionId}/${job.id}`)
                     }
                   ></Job>
                 ))}

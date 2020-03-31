@@ -97,3 +97,6 @@ export const positionsSelector = createSelector(
 
 export const makeJobsSelector = positionId =>
   fp.compose(fp.values, fp.getOr({}, `positions.${positionId}.jobs`));
+
+export const makeJobSelector = (positionId, jobId) =>
+  fp.get(`positions.${positionId}.jobs.${jobId}`);

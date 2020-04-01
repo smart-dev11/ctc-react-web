@@ -55,7 +55,7 @@ function App() {
                     <Route path="/signin" exact>
                       <Signin></Signin>
                     </Route>
-                    <PrivateRoute path="/:positionId/:jobId">
+                    <PrivateRoute path="/:id">
                       <ResumeStudio></ResumeStudio>
                     </PrivateRoute>
                   </Switch>

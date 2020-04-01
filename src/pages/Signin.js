@@ -33,7 +33,7 @@ export default () => {
     }),
     onSubmit: async values => {
       await dispatch(login(values.email, values.password));
-      history.replace('/jobs');
+      history.replace('/');
     }
   });
 

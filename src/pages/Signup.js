@@ -39,7 +39,7 @@ export default () => {
     }),
     onSubmit: async values => {
       await dispatch(register(values.email, values.password));
-      history.replace('/jobs');
+      history.replace('/');
     }
   });
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
 import { useEffect, useState, Fragment } from 'react';
@@ -13,13 +14,15 @@ import {
   GET_POSITIONS,
   ADD_POSITION,
   REMOVE_POSITION,
-  SAVE_POSITION,
+  SAVE_POSITION
+} from '../../store/positions';
+import {
+  removeJob,
+  uploadResume,
   REMOVE_JOB,
   UPLOAD_RESUME,
-  makeJobsSelector,
-  removeJob,
-  uploadResume
-} from '../../store/positions';
+  makeJobsSelector
+} from '../../store/jobs';
 import { makeLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
 import EditPosition from './EditPosition';
@@ -52,12 +55,10 @@ export default () => {
   const jobs = useSelector(makeJobsSelector(selectedPositionId));
 
   useEffect(() => {
-    dispatch(getPositions()).then(({ value }) => {
-      if (value.length) {
-        setSelectedPositionId(value[0].id);
-      }
+    dispatch(getPositions()).then(() => {
+      setSelectedPositionId(positions[0].id);
     });
-  }, [dispatch]);
+  }, []);
 
   return (
     <Page>
@@ -101,16 +102,15 @@ export default () => {
                       setEditPositionId(position.id);
                       setPositionName(position.name);
                     }}
-                    onRemoveClick={() =>
-                      dispatch(removePosition(position.id)).then(() => {
-                        if (
-                          selectedPositionId === position.id &&
-                          positions.length > 1
-                        ) {
-                          setSelectedPositionId(positions[0].id);
-                        }
-                      })
-                    }
+                    onRemoveClick={() => {
+                      if (
+                        selectedPositionId === position.id &&
+                        positions.length > 1
+                      ) {
+                        setSelectedPositionId(positions[0].id);
+                      }
+                      dispatch(removePosition(position.id));
+                    }}
                   ></PositionTab>
                 )
               )}
@@ -157,16 +157,12 @@ export default () => {
                       borderTop: index > 0 ? '1px solid' : '',
                       borderTopColor: 'border'
                     }}
-                    onRemoveClick={() =>
-                      dispatch(removeJob(selectedPositionId, job.id))
-                    }
+                    onRemoveClick={() => dispatch(removeJob(job.id))}
                     onUploadClick={() => {
                       setIsUploadOpen(true);
                       setUploadJobId(job.id);
                     }}
-                    onEditClick={() =>
-                      history.push(`/${selectedPositionId}/${job.id}`)
-                    }
+                    onEditClick={() => history.push(`/${job.id}`)}
                   ></Job>
                 ))}
               </div>

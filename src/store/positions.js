@@ -3,19 +3,30 @@ import produce from 'immer';
 import delay from 'p-min-delay';
 import { ActionType } from 'redux-promise-middleware';
 import { createSelector } from 'reselect';
-import _ from 'lodash';
 import fp from 'lodash/fp';
+import { schema, normalize } from 'normalizr';
+import { REMOVE_JOB } from './jobs';
 
 export const GET_POSITIONS = 'GET_POSITIONS';
 export const ADD_POSITION = 'ADD_POSITION';
 export const REMOVE_POSITION = 'REMOVE_POSITION';
 export const SAVE_POSITION = 'SAVE_POSITION';
-export const REMOVE_JOB = 'REMOVE_JOB';
-export const UPLOAD_RESUME = 'UPLOAD_RESUME';
 
 export const getPositions = () => ({
   type: GET_POSITIONS,
-  payload: delay(request.get('/positions/').then(fp.get('data')), 1500)
+  payload: delay(
+    request
+      .get('/positions/')
+      .then(fp.get('data'))
+      .then(data => {
+        const job = new schema.Entity('jobs');
+        const position = new schema.Entity('positions', { jobs: [job] });
+        const { entities } = normalize(data, [position]);
+        console.log(entities);
+        return entities;
+      }),
+    1500
+  )
 });
 
 export const addPosition = name => ({
@@ -26,11 +37,12 @@ export const addPosition = name => ({
   )
 });
 
-export const removePosition = id => ({
-  type: REMOVE_POSITION,
-  payload: delay(request.delete(`/positions/${id}`), 1500),
-  meta: { id }
-});
+export const removePosition = id => (dispatch, getState) =>
+  dispatch({
+    type: REMOVE_POSITION,
+    payload: delay(request.delete(`/positions/${id}`), 1500),
+    meta: makePositionSelector(id)(getState())
+  });
 
 export const savePosition = position => ({
   type: SAVE_POSITION,
@@ -40,37 +52,14 @@ export const savePosition = position => ({
   )
 });
 
-export const removeJob = (positionId, jobId) => ({
-  type: REMOVE_JOB,
-  payload: delay(request.delete(`/jobs/${jobId}`), 1500),
-  meta: { positionId, jobId }
-});
-
-export const uploadResume = (jobId, file) => {
-  const formData = new FormData();
-  formData.append('resume', file);
-  return {
-    type: UPLOAD_RESUME,
-    payload: delay(request.put(`/jobs/${jobId}/resume_upload/`, formData), 1500)
-  };
-};
-
 const initialState = {};
 
 export default produce((draft, { type, payload, meta }) => {
   switch (type) {
     case `${GET_POSITIONS}_${ActionType.Fulfilled}`:
-      payload.forEach(position => {
-        draft[position.id] = _.omit(position, ['jobs']);
-        draft[position.id].jobs = {};
-        position.jobs.forEach(job => {
-          draft[position.id].jobs[job.id] = job;
-        });
-      });
-      return;
+      return payload.positions;
     case `${ADD_POSITION}_${ActionType.Fulfilled}`:
       draft[payload.id] = payload;
-      draft[payload.id].jobs = {};
       return;
     case `${REMOVE_POSITION}_${ActionType.Fulfilled}`:
       delete draft[meta.id];
@@ -79,7 +68,7 @@ export default produce((draft, { type, payload, meta }) => {
       draft[payload.id].name = payload.name;
       return;
     case `${REMOVE_JOB}_${ActionType.Fulfilled}`:
-      delete draft[meta.positionId].jobs[meta.jobId];
+      draft[meta.position].splice(draft[meta.position].indexOf(meta.id));
       return;
     default:
       return;
@@ -88,15 +77,13 @@ export default produce((draft, { type, payload, meta }) => {
 
 export const positionsSelector = createSelector(
   fp.get('positions'),
-  positions =>
-    Object.values(positions).map(position => ({
+  fp.get('jobs'),
+  (positions, jobs) => {
+    return Object.values(positions).map(position => ({
       ...position,
-      jobs: Object.values(position.jobs)
-    }))
+      jobs: (position.jobs || []).map(id => jobs[id])
+    }));
+  }
 );
 
-export const makeJobsSelector = positionId =>
-  fp.compose(fp.values, fp.getOr({}, `positions.${positionId}.jobs`));
-
-export const makeJobSelector = (positionId, jobId) =>
-  fp.get(`positions.${positionId}.jobs.${jobId}`);
+export const makePositionSelector = id => fp.get(['positions', id]);

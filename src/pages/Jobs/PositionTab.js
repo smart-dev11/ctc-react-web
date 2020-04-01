@@ -10,20 +10,23 @@ export default ({ position, active, onEditClick, onRemoveClick, ...props }) => {
       {({ isHovering }) => (
         <Tab active={active} {...props}>
           {position.name}
-          {isHovering && (
-            <Link
-              onClick={onEditClick}
-              color={isHovering ? 'text' : 'border'}
-              sx={{ ml: 2 }}
-            >
-              <i className="fas fa-pen"></i>
-            </Link>
-          )}
           <Link
-            onClick={() =>
-              window.confirm(`Are you sure to remove ${position.name}?`) &&
-              onRemoveClick()
-            }
+            onClick={e => {
+              e.stopPropagation();
+              onEditClick();
+            }}
+            color={isHovering ? 'text' : 'border'}
+            sx={{ ml: 2 }}
+          >
+            <i className="fas fa-pen"></i>
+          </Link>
+          <Link
+            onClick={e => {
+              e.stopPropagation();
+              if (!window.confirm(`Are you sure to remove ${position.name}?`))
+                return;
+              onRemoveClick();
+            }}
             color={isHovering ? 'text' : 'border'}
             sx={{ ml: 2 }}
           >

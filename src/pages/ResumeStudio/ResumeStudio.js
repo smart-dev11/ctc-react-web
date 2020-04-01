@@ -5,7 +5,7 @@ import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import JobDetail from '../Jobs/JobDetail';
 import { useSelector } from 'react-redux';
-import { makeJobSelector } from '../../store/positions';
+import { makeJobSelector } from '../../store/jobs';
 import Tab from '../../components/Tab';
 
 const CardTitle = ({ children, ...props }) => (
@@ -32,14 +32,15 @@ const Keyword = ({ children, ...props }) => (
       mr: 4,
       mb: 3
     }}
+    {...props}
   >
     {children}
   </div>
 );
 
 export default () => {
-  const { positionId, jobId } = useParams();
-  const job = useSelector(makeJobSelector(positionId, jobId));
+  const { id } = useParams();
+  const job = useSelector(makeJobSelector(id));
 
   return (
     <Page>

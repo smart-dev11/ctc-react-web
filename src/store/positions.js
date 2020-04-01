@@ -68,7 +68,9 @@ export default produce((draft, { type, payload, meta }) => {
       draft[payload.id].name = payload.name;
       return;
     case `${REMOVE_JOB}_${ActionType.Fulfilled}`:
-      draft[meta.position].splice(draft[meta.position].indexOf(meta.id));
+      draft[meta.position].jobs.splice(
+        draft[meta.position].jobs.indexOf(meta.id)
+      );
       return;
     default:
       return;

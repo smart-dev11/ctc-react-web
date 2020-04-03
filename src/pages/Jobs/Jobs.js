@@ -37,6 +37,7 @@ import Job from './Job';
 import ResumeUpload from './ResumeUpload';
 import Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default () => {
   const { theme } = useThemeUI();
@@ -73,6 +74,8 @@ export default () => {
     });
   }, [dispatch]);
 
+  const onDragEnd = () => {};
+
   return (
     <DndProvider backend={Backend}>
       <Page>
@@ -91,72 +94,89 @@ export default () => {
         ) : (
           <Fragment>
             <LoadingOverlay loading={positionsLoading} spinner={false}>
-              <div sx={{ display: 'flex', alignItems: 'center' }}>
-                {positions.map(position =>
-                  editPositionId === position.id ? (
-                    <EditPosition
-                      key={position.id}
-                      position={positionName}
-                      onPositionChange={setPositionName}
-                      onSave={async () => {
-                        await dispatch(
-                          savePosition({ id: position.id, name: positionName })
-                        );
-                        setEditPositionId(0);
-                      }}
-                      onClose={() => setEditPositionId(0)}
-                    ></EditPosition>
-                  ) : (
-                    <PositionTab
-                      active={selectedPositionId === position.id}
-                      key={position.id}
-                      position={position}
-                      onClick={() => setSelectedPositionId(position.id)}
-                      onEditClick={() => {
-                        setEditPositionId(position.id);
-                        setPositionName(position.name);
-                      }}
-                      onRemoveClick={() => {
-                        dispatch(removePosition(position.id)).then(() => {
-                          if (
-                            selectedPositionId === position.id &&
-                            positions.length > 1
-                          ) {
-                            setSelectedPositionId(positions[0].id);
-                          }
-                        });
-                      }}
-                      onJobDrop={job =>
-                        dispatch(changeJobPosition(job, position))
-                      }
-                    ></PositionTab>
-                  )
-                )}
-                {editPositionId < 0 ? (
-                  <EditPosition
-                    position={positionName}
-                    onPositionChange={setPositionName}
-                    onSave={async () => {
-                      await dispatch(addPosition(positionName));
-                      setEditPositionId(0);
-                    }}
-                    onClose={() => setEditPositionId(0)}
-                  ></EditPosition>
-                ) : (
-                  <Tab active={positions.length === 0}>
-                    <Link
-                      color="primary"
-                      onClick={() => {
-                        setEditPositionId(-1);
-                        setPositionName('');
-                      }}
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="droppable">
+                  {(provided, snapshot) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      sx={{ display: 'flex', alignItems: 'center' }}
                     >
-                      <i className="fas fa-plus"></i>
-                      {positions.length ? '' : ' Add Position'}
-                    </Link>
-                  </Tab>
-                )}
-              </div>
+                      {positions.map(position => (
+                        <Draggable key={position.id}>
+                          {editPositionId === position.id ? (
+                            <EditPosition
+                              key={position.id}
+                              position={positionName}
+                              onPositionChange={setPositionName}
+                              onSave={async () => {
+                                await dispatch(
+                                  savePosition({
+                                    id: position.id,
+                                    name: positionName
+                                  })
+                                );
+                                setEditPositionId(0);
+                              }}
+                              onClose={() => setEditPositionId(0)}
+                            ></EditPosition>
+                          ) : (
+                            <PositionTab
+                              active={selectedPositionId === position.id}
+                              key={position.id}
+                              position={position}
+                              onClick={() => setSelectedPositionId(position.id)}
+                              onEditClick={() => {
+                                setEditPositionId(position.id);
+                                setPositionName(position.name);
+                              }}
+                              onRemoveClick={() => {
+                                dispatch(removePosition(position.id)).then(
+                                  () => {
+                                    if (
+                                      selectedPositionId === position.id &&
+                                      positions.length > 1
+                                    ) {
+                                      setSelectedPositionId(positions[0].id);
+                                    }
+                                  }
+                                );
+                              }}
+                              onJobDrop={job =>
+                                dispatch(changeJobPosition(job, position))
+                              }
+                            ></PositionTab>
+                          )}
+                        </Draggable>
+                      ))}
+                      {editPositionId < 0 ? (
+                        <EditPosition
+                          position={positionName}
+                          onPositionChange={setPositionName}
+                          onSave={async () => {
+                            await dispatch(addPosition(positionName));
+                            setEditPositionId(0);
+                          }}
+                          onClose={() => setEditPositionId(0)}
+                        ></EditPosition>
+                      ) : (
+                        <Tab active={positions.length === 0}>
+                          <Link
+                            color="primary"
+                            onClick={() => {
+                              setEditPositionId(-1);
+                              setPositionName('');
+                            }}
+                          >
+                            <i className="fas fa-plus"></i>
+                            {positions.length ? '' : ' Add Position'}
+                          </Link>
+                        </Tab>
+                      )}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
             </LoadingOverlay>
             {jobs.length > 0 ? (
               <LoadingOverlay loading={jobsLoading}>

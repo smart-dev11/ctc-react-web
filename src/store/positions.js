@@ -4,6 +4,7 @@ import delay from 'p-min-delay';
 import { ActionType } from 'redux-promise-middleware';
 import { createSelector } from 'reselect';
 import fp from 'lodash/fp';
+import _ from 'lodash';
 import { schema, normalize } from 'normalizr';
 import { REMOVE_JOB, CHANGE_JOB_POSITION } from './jobs';
 
@@ -11,6 +12,7 @@ export const GET_POSITIONS = 'GET_POSITIONS';
 export const ADD_POSITION = 'ADD_POSITION';
 export const REMOVE_POSITION = 'REMOVE_POSITION';
 export const SAVE_POSITION = 'SAVE_POSITION';
+export const MOVE_POSITION = 'MOVE_POSITION';
 
 export const getPositions = () => ({
   type: GET_POSITIONS,
@@ -52,6 +54,13 @@ export const savePosition = position => ({
   )
 });
 
+export const movePosition = (id, order) => (dispatch, getState) =>
+  dispatch({
+    type: MOVE_POSITION,
+    payload: delay(request.put(`/positions/${id}/move/`, { order }), 1500),
+    meta: { position: makePositionSelector(id)(getState()), order }
+  });
+
 const initialState = {};
 
 export default produce((draft, { type, payload, meta }) => {
@@ -80,6 +89,28 @@ export default produce((draft, { type, payload, meta }) => {
       );
       draft[meta.position.id].jobs.push(meta.job.id);
       return;
+    case `${MOVE_POSITION}_${ActionType.Pending}`:
+      if (meta.position.order > meta.order) {
+        for (const id in draft) {
+          if (
+            draft[id].order < meta.position.order &&
+            draft[id].order >= meta.order &&
+            draft[id].id !== meta.position.id
+          )
+            draft[id].order += 1;
+        }
+      } else {
+        for (const id in draft) {
+          if (
+            draft[id].order <= meta.order &&
+            draft[id].order > meta.position.order &&
+            draft[id].id !== meta.position.id
+          )
+            draft[id].order -= 1;
+        }
+      }
+      draft[meta.position.id].order = meta.order;
+      return;
     default:
       return;
   }
@@ -89,10 +120,11 @@ export const positionsSelector = createSelector(
   fp.get('positions'),
   fp.get('jobs'),
   (positions, jobs) => {
-    return Object.values(positions).map(position => ({
+    const arr = Object.values(positions).map(position => ({
       ...position,
       jobs: (position.jobs || []).map(id => jobs[id])
     }));
+    return _.sortBy(arr, 'order');
   }
 );
 

@@ -7,7 +7,8 @@ export default {
     text: '#707070',
     darkText: '#1D1E1E',
     placeholder: '#DDDDDD',
-    border: '#DDDDDD'
+    border: '#DDDDDD',
+    white: '#FFFFFF'
   },
   space: [...Array(20).keys()].map(val => val * 4),
   fonts: {},

@@ -16,6 +16,7 @@ export default ({ position, onPositionChange, onSave, onClose }) => (
     <Input
       value={position}
       onChange={e => onPositionChange(e.target.value)}
+      onKeyDown={e => e.key === 'Enter' && onSave()}
       inputSx={{ py: 2 }}
       sx={{ width: 200 }}
     ></Input>

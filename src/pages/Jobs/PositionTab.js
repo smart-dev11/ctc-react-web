@@ -3,19 +3,34 @@ import { jsx } from 'theme-ui';
 import Tab from '../../components/Tab';
 import ReactHoverObserver from 'react-hover-observer';
 import Link from '../../components/Link';
+import { useDrop } from 'react-dnd';
 
 export default ({ position, active, onEditClick, onRemoveClick, ...props }) => {
+  const [{ isOver }, drop] = useDrop({
+    accept: 'JOB',
+    drop(item) {
+      console.log(item);
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver()
+    })
+  });
   return (
     <ReactHoverObserver sx={{ display: 'inline-block' }}>
       {({ isHovering }) => (
-        <Tab active={active} {...props}>
+        <Tab
+          active={active}
+          ref={drop}
+          sx={isOver ? { bg: 'primary', color: 'white' } : {}}
+          {...props}
+        >
           {position.name}
           <Link
             onClick={e => {
               e.stopPropagation();
               onEditClick();
             }}
-            color={isHovering ? 'text' : 'border'}
+            color={isHovering ? 'text' : isOver ? 'white' : 'border'}
             sx={{ ml: 2 }}
           >
             <i className="fas fa-pen"></i>
@@ -27,7 +42,7 @@ export default ({ position, active, onEditClick, onRemoveClick, ...props }) => {
                 return;
               onRemoveClick();
             }}
-            color={isHovering ? 'text' : 'border'}
+            color={isHovering ? 'text' : isOver ? 'white' : 'border'}
             sx={{ ml: 2 }}
           >
             <i className="fas fa-trash"></i>

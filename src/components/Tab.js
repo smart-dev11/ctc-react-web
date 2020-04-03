@@ -1,10 +1,12 @@
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
+import { forwardRef } from 'react';
 
-export default ({ children, active, ...props }) => {
+export default forwardRef(({ children, active, ...props }, ref) => {
   const { theme } = useThemeUI();
   return (
     <div
+      ref={ref}
       sx={{
         display: 'inline-block',
         py: 2,
@@ -20,4 +22,4 @@ export default ({ children, active, ...props }) => {
       {children}
     </div>
   );
-};
+});

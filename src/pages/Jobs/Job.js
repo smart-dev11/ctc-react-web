@@ -3,6 +3,7 @@ import { jsx } from 'theme-ui';
 import Moment from 'react-moment';
 import Link from '../../components/Link';
 import JobDetail from './JobDetail';
+import { useDrag } from 'react-dnd';
 
 export default ({
   job,
@@ -11,13 +12,21 @@ export default ({
   onEditClick,
   ...props
 }) => {
+  const [{ isDragging }, drag] = useDrag({
+    item: { type: 'JOB', job },
+    collect: monitor => ({
+      isDragging: !!monitor.isDragging()
+    })
+  });
   return (
     <div
+      ref={drag}
       sx={{
         p: 5,
         display: 'grid',
         gridTemplateColumns: '2fr 1fr auto',
-        alignItems: 'center'
+        alignItems: 'center',
+        opacity: isDragging ? 0.5 : 1
       }}
       {...props}
     >

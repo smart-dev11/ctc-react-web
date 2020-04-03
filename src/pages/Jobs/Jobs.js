@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
 import { useEffect, useState, Fragment } from 'react';
@@ -34,6 +33,8 @@ import Tab from '../../components/Tab';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import Job from './Job';
 import ResumeUpload from './ResumeUpload';
+import Backend from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 
 export default () => {
   const { theme } = useThemeUI();
@@ -55,131 +56,134 @@ export default () => {
   const jobs = useSelector(makeJobsSelector(selectedPositionId));
 
   useEffect(() => {
-    dispatch(getPositions()).then(() => {
-      setSelectedPositionId(positions[0].id);
+    dispatch(getPositions()).then(({ value }) => {
+      setSelectedPositionId(parseInt(Object.keys(value.positions)[0]));
     });
-  }, []);
+  }, [dispatch]);
 
   return (
-    <Page>
-      <PageTitle>Saved Jobs</PageTitle>
-      {pageLoading ? (
-        <div
-          sx={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <HashLoader color={theme.colors.primary}></HashLoader>
-        </div>
-      ) : (
-        <Fragment>
-          <LoadingOverlay loading={positionsLoading} spinner={false}>
-            <div sx={{ display: 'flex', alignItems: 'center' }}>
-              {positions.map(position =>
-                editPositionId === position.id ? (
+    <DndProvider backend={Backend}>
+      <Page>
+        <PageTitle>Saved Jobs</PageTitle>
+        {pageLoading ? (
+          <div
+            sx={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <HashLoader color={theme.colors.primary}></HashLoader>
+          </div>
+        ) : (
+          <Fragment>
+            <LoadingOverlay loading={positionsLoading} spinner={false}>
+              <div sx={{ display: 'flex', alignItems: 'center' }}>
+                {positions.map(position =>
+                  editPositionId === position.id ? (
+                    <EditPosition
+                      key={position.id}
+                      position={positionName}
+                      onPositionChange={setPositionName}
+                      onSave={async () => {
+                        await dispatch(
+                          savePosition({ id: position.id, name: positionName })
+                        );
+                        setEditPositionId(0);
+                      }}
+                      onClose={() => setEditPositionId(0)}
+                    ></EditPosition>
+                  ) : (
+                    <PositionTab
+                      active={selectedPositionId === position.id}
+                      key={position.id}
+                      position={position}
+                      onClick={() => setSelectedPositionId(position.id)}
+                      onEditClick={() => {
+                        setEditPositionId(position.id);
+                        setPositionName(position.name);
+                      }}
+                      onRemoveClick={() => {
+                        dispatch(removePosition(position.id)).then(() => {
+                          if (
+                            selectedPositionId === position.id &&
+                            positions.length > 1
+                          ) {
+                            setSelectedPositionId(positions[0].id);
+                          }
+                        });
+                      }}
+                    ></PositionTab>
+                  )
+                )}
+                {editPositionId < 0 ? (
                   <EditPosition
-                    key={position.id}
                     position={positionName}
                     onPositionChange={setPositionName}
                     onSave={async () => {
-                      await dispatch(
-                        savePosition({ id: position.id, name: positionName })
-                      );
+                      await dispatch(addPosition(positionName));
                       setEditPositionId(0);
                     }}
                     onClose={() => setEditPositionId(0)}
                   ></EditPosition>
                 ) : (
-                  <PositionTab
-                    active={selectedPositionId === position.id}
-                    key={position.id}
-                    position={position}
-                    onClick={() => setSelectedPositionId(position.id)}
-                    onEditClick={() => {
-                      setEditPositionId(position.id);
-                      setPositionName(position.name);
-                    }}
-                    onRemoveClick={() => {
-                      if (
-                        selectedPositionId === position.id &&
-                        positions.length > 1
-                      ) {
-                        setSelectedPositionId(positions[0].id);
-                      }
-                      dispatch(removePosition(position.id));
-                    }}
-                  ></PositionTab>
-                )
-              )}
-              {editPositionId < 0 ? (
-                <EditPosition
-                  position={positionName}
-                  onPositionChange={setPositionName}
-                  onSave={async () => {
-                    await dispatch(addPosition(positionName));
-                    setEditPositionId(0);
-                  }}
-                  onClose={() => setEditPositionId(0)}
-                ></EditPosition>
-              ) : (
-                <Tab active={positions.length === 0}>
-                  <Link
-                    color="primary"
-                    onClick={() => {
-                      setEditPositionId(-1);
-                      setPositionName('');
-                    }}
-                  >
-                    <i className="fas fa-plus"></i>
-                    {positions.length ? '' : ' Add Position'}
-                  </Link>
-                </Tab>
-              )}
-            </div>
-          </LoadingOverlay>
-          {jobs.length > 0 ? (
-            <LoadingOverlay loading={jobsLoading}>
-              <div
-                sx={{
-                  boxShadow: 'medium',
-                  flex: 1,
-                  backgroundColor: 'white'
-                }}
-              >
-                {jobs.map((job, index) => (
-                  <Job
-                    key={job.id}
-                    job={job}
-                    sx={{
-                      borderTop: index > 0 ? '1px solid' : '',
-                      borderTopColor: 'border'
-                    }}
-                    onRemoveClick={() => dispatch(removeJob(job.id))}
-                    onUploadClick={() => {
-                      setIsUploadOpen(true);
-                      setUploadJobId(job.id);
-                    }}
-                    onEditClick={() => history.push(`/${job.id}`)}
-                  ></Job>
-                ))}
+                  <Tab active={positions.length === 0}>
+                    <Link
+                      color="primary"
+                      onClick={() => {
+                        setEditPositionId(-1);
+                        setPositionName('');
+                      }}
+                    >
+                      <i className="fas fa-plus"></i>
+                      {positions.length ? '' : ' Add Position'}
+                    </Link>
+                  </Tab>
+                )}
               </div>
             </LoadingOverlay>
-          ) : (
-            <NoJobs></NoJobs>
-          )}
-        </Fragment>
-      )}
-      <ResumeUpload
-        isOpen={isUploadOpen}
-        onClose={() => setIsUploadOpen(false)}
-        onUpload={file => {
-          dispatch(uploadResume(uploadJobId, file));
-          setIsUploadOpen(false);
-        }}
-      ></ResumeUpload>
-    </Page>
+            {jobs.length > 0 ? (
+              <LoadingOverlay loading={jobsLoading}>
+                <div
+                  sx={{
+                    boxShadow: 'medium',
+                    flex: 1,
+                    backgroundColor: 'white'
+                  }}
+                >
+                  {jobs.map((job, index) => (
+                    <Job
+                      key={job.id}
+                      job={job}
+                      sx={{
+                        borderTop: index > 0 ? '1px solid' : '',
+                        borderTopColor: 'border'
+                      }}
+                      onRemoveClick={() => dispatch(removeJob(job.id))}
+                      onUploadClick={() => {
+                        setIsUploadOpen(true);
+                        setUploadJobId(job.id);
+                      }}
+                      onEditClick={() => history.push(`/${job.id}`)}
+                    ></Job>
+                  ))}
+                </div>
+              </LoadingOverlay>
+            ) : (
+              <NoJobs></NoJobs>
+            )}
+          </Fragment>
+        )}
+        <ResumeUpload
+          isOpen={isUploadOpen}
+          onClose={() => setIsUploadOpen(false)}
+          onUpload={file => {
+            dispatch(uploadResume(uploadJobId, file));
+            setIsUploadOpen(false);
+          }}
+        ></ResumeUpload>
+      </Page>
+    </DndProvider>
   );
 };

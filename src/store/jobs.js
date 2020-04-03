@@ -4,6 +4,7 @@ import { GET_POSITIONS, REMOVE_POSITION } from './positions';
 import request from '../utils/request';
 import delay from 'p-min-delay';
 import fp from 'lodash/fp';
+import _ from 'lodash';
 
 export const REMOVE_JOB = 'REMOVE_JOB';
 export const UPLOAD_RESUME = 'UPLOAD_RESUME';
@@ -50,4 +51,4 @@ export default produce((draft, { type, payload, meta }) => {
 export const makeJobSelector = id => fp.get(['jobs', id]);
 
 export const makeJobsSelector = positionId => state =>
-  positionId ? state.positions[positionId].jobs.map(id => state.jobs[id]) : [];
+  _.get(state.positions, [positionId, 'jobs'], []).map(id => state.jobs[id]);

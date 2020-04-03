@@ -5,7 +5,7 @@ import { ActionType } from 'redux-promise-middleware';
 import { createSelector } from 'reselect';
 import fp from 'lodash/fp';
 import { schema, normalize } from 'normalizr';
-import { REMOVE_JOB } from './jobs';
+import { REMOVE_JOB, CHANGE_JOB_POSITION } from './jobs';
 
 export const GET_POSITIONS = 'GET_POSITIONS';
 export const ADD_POSITION = 'ADD_POSITION';
@@ -69,8 +69,16 @@ export default produce((draft, { type, payload, meta }) => {
       return;
     case `${REMOVE_JOB}_${ActionType.Fulfilled}`:
       draft[meta.position].jobs.splice(
-        draft[meta.position].jobs.indexOf(meta.id)
+        draft[meta.position].jobs.indexOf(meta.id),
+        1
       );
+      return;
+    case `${CHANGE_JOB_POSITION}_${ActionType.Fulfilled}`:
+      draft[meta.job.position].jobs.splice(
+        draft[meta.job.position].jobs.indexOf(meta.job.id),
+        1
+      );
+      draft[meta.position.id].jobs.push(meta.job.id);
       return;
     default:
       return;

@@ -5,11 +5,18 @@ import ReactHoverObserver from 'react-hover-observer';
 import Link from '../../components/Link';
 import { useDrop } from 'react-dnd';
 
-export default ({ position, active, onEditClick, onRemoveClick, ...props }) => {
+export default ({
+  position,
+  active,
+  onEditClick,
+  onRemoveClick,
+  onJobDrop,
+  ...props
+}) => {
   const [{ isOver }, drop] = useDrop({
     accept: 'JOB',
     drop(item) {
-      console.log(item);
+      onJobDrop(item.job);
     },
     collect: monitor => ({
       isOver: monitor.isOver()

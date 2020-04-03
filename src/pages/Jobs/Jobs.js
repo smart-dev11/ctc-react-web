@@ -20,7 +20,9 @@ import {
   uploadResume,
   REMOVE_JOB,
   UPLOAD_RESUME,
-  makeJobsSelector
+  makeJobsSelector,
+  changeJobPosition,
+  CHANGE_JOB_POSITION
 } from '../../store/jobs';
 import { makeLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
@@ -43,10 +45,20 @@ export default () => {
   const positions = useSelector(positionsSelector);
   const pageLoading = useSelector(makeLoadingSelector([GET_POSITIONS]));
   const positionsLoading = useSelector(
-    makeLoadingSelector([ADD_POSITION, REMOVE_POSITION, SAVE_POSITION])
+    makeLoadingSelector([
+      ADD_POSITION,
+      REMOVE_POSITION,
+      SAVE_POSITION,
+      CHANGE_JOB_POSITION
+    ])
   );
   const jobsLoading = useSelector(
-    makeLoadingSelector([REMOVE_JOB, REMOVE_POSITION, UPLOAD_RESUME])
+    makeLoadingSelector([
+      REMOVE_JOB,
+      REMOVE_POSITION,
+      UPLOAD_RESUME,
+      CHANGE_JOB_POSITION
+    ])
   );
   const [editPositionId, setEditPositionId] = useState(0);
   const [positionName, setPositionName] = useState('');
@@ -114,6 +126,9 @@ export default () => {
                           }
                         });
                       }}
+                      onJobDrop={job =>
+                        dispatch(changeJobPosition(job, position))
+                      }
                     ></PositionTab>
                   )
                 )}

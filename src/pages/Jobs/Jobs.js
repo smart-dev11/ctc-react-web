@@ -15,7 +15,7 @@ import {
   REMOVE_POSITION,
   SAVE_POSITION,
   movePosition,
-  MOVE_POSITION
+  MOVE_POSITION,
 } from '../../store/positions';
 import {
   removeJob,
@@ -24,7 +24,7 @@ import {
   UPLOAD_RESUME,
   makeJobsSelector,
   changeJobPosition,
-  CHANGE_JOB_POSITION
+  CHANGE_JOB_POSITION,
 } from '../../store/jobs';
 import { makeLoadingSelector } from '../../store/loading';
 import NoJobs from './NoJobs';
@@ -40,6 +40,7 @@ import ResumeUpload from './ResumeUpload';
 import Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import UpdateSuggest from './UpdateSuggest';
 
 export default () => {
   const { theme } = useThemeUI();
@@ -53,7 +54,7 @@ export default () => {
       REMOVE_POSITION,
       SAVE_POSITION,
       CHANGE_JOB_POSITION,
-      MOVE_POSITION
+      MOVE_POSITION,
     ])
   );
   const jobsLoading = useSelector(
@@ -61,7 +62,7 @@ export default () => {
       REMOVE_JOB,
       REMOVE_POSITION,
       UPLOAD_RESUME,
-      CHANGE_JOB_POSITION
+      CHANGE_JOB_POSITION,
     ])
   );
   const [editPositionId, setEditPositionId] = useState(0);
@@ -69,6 +70,8 @@ export default () => {
   const [selectedPositionId, setSelectedPositionId] = useState(0);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [uploadJobId, setUploadJobId] = useState(0);
+  const [isSuggestOpen, setIsSuggestOpen] = useState(false);
+  const [proceedUrl, setProceedUrl] = useState('');
   const jobs = useSelector(makeJobsSelector(selectedPositionId));
 
   useEffect(() => {
@@ -91,7 +94,7 @@ export default () => {
               flex: 1,
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
             }}
           >
             <HashLoader color={theme.colors.primary}></HashLoader>
@@ -107,30 +110,31 @@ export default () => {
                       ref={provided.innerRef}
                       sx={{ display: 'flex', alignItems: 'center' }}
                     >
-                      {positions.map((position, index) => (
-                        <Draggable
-                          key={position.id}
-                          draggableId={`${position.id}`}
-                          index={index}
-                        >
-                          {provided =>
-                            editPositionId === position.id ? (
-                              <EditPosition
-                                key={position.id}
-                                position={positionName}
-                                onPositionChange={setPositionName}
-                                onSave={async () => {
-                                  await dispatch(
-                                    savePosition({
-                                      id: position.id,
-                                      name: positionName
-                                    })
-                                  );
-                                  setEditPositionId(0);
-                                }}
-                                onClose={() => setEditPositionId(0)}
-                              ></EditPosition>
-                            ) : (
+                      {positions.map((position, index) =>
+                        editPositionId === position.id ? (
+                          <EditPosition
+                            key={position.id}
+                            position={positionName}
+                            onPositionChange={setPositionName}
+                            onSave={async () => {
+                              await dispatch(
+                                savePosition({
+                                  id: position.id,
+                                  name: positionName,
+                                })
+                              );
+                              setEditPositionId(0);
+                            }}
+                            onClose={() => setEditPositionId(0)}
+                          ></EditPosition>
+                        ) : (
+                          <Draggable
+                            key={position.id}
+                            draggableId={`${position.id}`}
+                            index={index}
+                            isDragDisabled={editPositionId !== 0}
+                          >
+                            {(provided) => (
                               <PositionTab
                                 isDragging={
                                   snapshot.isUsingPlaceholder ||
@@ -162,14 +166,14 @@ export default () => {
                                     }
                                   );
                                 }}
-                                onJobDrop={job =>
+                                onJobDrop={(job) =>
                                   dispatch(changeJobPosition(job, position))
                                 }
                               ></PositionTab>
-                            )
-                          }
-                        </Draggable>
-                      ))}
+                            )}
+                          </Draggable>
+                        )
+                      )}
                       {!snapshot.isDraggingOver &&
                         !snapshot.isUsingPlaceholder && (
                           <Fragment>
@@ -211,7 +215,7 @@ export default () => {
                   sx={{
                     boxShadow: 'medium',
                     flex: 1,
-                    backgroundColor: 'white'
+                    backgroundColor: 'white',
                   }}
                 >
                   {jobs.map((job, index) => (
@@ -220,7 +224,7 @@ export default () => {
                       job={job}
                       sx={{
                         borderTop: index > 0 ? '1px solid' : '',
-                        borderTopColor: 'border'
+                        borderTopColor: 'border',
                       }}
                       onRemoveClick={() => dispatch(removeJob(job.id))}
                       onUploadClick={() => {
@@ -228,6 +232,10 @@ export default () => {
                         setUploadJobId(job.id);
                       }}
                       onEditClick={() => history.push(`/${job.id}`)}
+                      onApply={() => {
+                        setIsSuggestOpen(true);
+                        setProceedUrl(job.url);
+                      }}
                     ></Job>
                   ))}
                 </div>
@@ -240,11 +248,19 @@ export default () => {
         <ResumeUpload
           isOpen={isUploadOpen}
           onClose={() => setIsUploadOpen(false)}
-          onUpload={file => {
+          onUpload={(file) => {
             dispatch(uploadResume(uploadJobId, file));
             setIsUploadOpen(false);
           }}
         ></ResumeUpload>
+        <UpdateSuggest
+          isOpen={isSuggestOpen}
+          onClose={() => setIsSuggestOpen(false)}
+          onProceed={() => {
+            window.open(proceedUrl);
+            setIsSuggestOpen(false);
+          }}
+        ></UpdateSuggest>
       </Page>
     </DndProvider>
   );

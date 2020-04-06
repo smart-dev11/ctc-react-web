@@ -20,45 +20,44 @@ export const getPositions = () => ({
     request
       .get('/positions/')
       .then(fp.get('data'))
-      .then(data => {
+      .then((data) => {
         const job = new schema.Entity('jobs');
         const position = new schema.Entity('positions', { jobs: [job] });
         const { entities } = normalize(data, [position]);
-        console.log(entities);
         return entities;
       }),
     1500
-  )
+  ),
 });
 
-export const addPosition = name => ({
+export const addPosition = (name) => ({
   type: ADD_POSITION,
   payload: delay(
     request.post('/positions/', { name }).then(fp.get('data')),
     1500
-  )
+  ),
 });
 
-export const removePosition = id => (dispatch, getState) =>
+export const removePosition = (id) => (dispatch, getState) =>
   dispatch({
     type: REMOVE_POSITION,
     payload: delay(request.delete(`/positions/${id}`), 1500),
-    meta: makePositionSelector(id)(getState())
+    meta: makePositionSelector(id)(getState()),
   });
 
-export const savePosition = position => ({
+export const savePosition = (position) => ({
   type: SAVE_POSITION,
   payload: delay(
     request.put(`/positions/${position.id}/`, position).then(fp.get('data')),
     1500
-  )
+  ),
 });
 
 export const movePosition = (id, order) => (dispatch, getState) =>
   dispatch({
     type: MOVE_POSITION,
     payload: delay(request.put(`/positions/${id}/move/`, { order }), 1500),
-    meta: { position: makePositionSelector(id)(getState()), order }
+    meta: { position: makePositionSelector(id)(getState()), order },
   });
 
 const initialState = {};
@@ -120,12 +119,12 @@ export const positionsSelector = createSelector(
   fp.get('positions'),
   fp.get('jobs'),
   (positions, jobs) => {
-    const arr = Object.values(positions).map(position => ({
+    const arr = Object.values(positions).map((position) => ({
       ...position,
-      jobs: (position.jobs || []).map(id => jobs[id])
+      jobs: (position.jobs || []).map((id) => jobs[id]),
     }));
     return _.sortBy(arr, 'order');
   }
 );
 
-export const makePositionSelector = id => fp.get(['positions', id]);
+export const makePositionSelector = (id) => fp.get(['positions', id]);

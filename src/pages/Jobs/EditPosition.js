@@ -10,13 +10,13 @@ export default ({ position, onPositionChange, onSave, onClose }) => (
       gridTemplateColumns: 'auto auto auto',
       gridGap: 2,
       width: 'fit-content',
-      alignItems: 'center'
+      alignItems: 'center',
     }}
   >
     <Input
       value={position}
-      onChange={e => onPositionChange(e.target.value)}
-      onKeyDown={e => e.key === 'Enter' && onSave()}
+      onChange={(e) => onPositionChange(e.target.value)}
+      onKeyDown={(e) => e.key === 'Enter' && onSave()}
       inputSx={{ py: 2 }}
       sx={{ width: 200 }}
     ></Input>

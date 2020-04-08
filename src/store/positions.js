@@ -65,7 +65,7 @@ const initialState = {};
 export default produce((draft, { type, payload, meta }) => {
   switch (type) {
     case `${GET_POSITIONS}_${ActionType.Fulfilled}`:
-      return payload.positions;
+      return payload.positions || {};
     case `${ADD_POSITION}_${ActionType.Fulfilled}`:
       draft[payload.id] = payload;
       return;

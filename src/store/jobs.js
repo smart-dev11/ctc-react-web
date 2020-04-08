@@ -10,11 +10,11 @@ export const REMOVE_JOB = 'REMOVE_JOB';
 export const UPLOAD_RESUME = 'UPLOAD_RESUME';
 export const CHANGE_JOB_POSITION = 'CHANGE_JOB_POSITION';
 
-export const removeJob = id => (dispatch, getState) =>
+export const removeJob = (id) => (dispatch, getState) =>
   dispatch({
     type: REMOVE_JOB,
     payload: delay(request.delete(`/jobs/${id}`), 1500),
-    meta: makeJobSelector(id)(getState())
+    meta: makeJobSelector(id)(getState()),
   });
 
 export const uploadResume = (id, file) => {
@@ -23,7 +23,7 @@ export const uploadResume = (id, file) => {
   return {
     type: UPLOAD_RESUME,
     payload: delay(request.put(`/jobs/${id}/resume_upload/`, formData), 1500),
-    meta: { id }
+    meta: { id },
   };
 };
 
@@ -33,7 +33,7 @@ export const changeJobPosition = (job, position) => ({
     request.put(`/jobs/${job.id}/position_change/`, { position: position.id }),
     1500
   ),
-  meta: { job, position }
+  meta: { job, position },
 });
 
 const initialState = {};
@@ -41,7 +41,7 @@ const initialState = {};
 export default produce((draft, { type, payload, meta }) => {
   switch (type) {
     case `${GET_POSITIONS}_${ActionType.Fulfilled}`:
-      return payload.jobs;
+      return payload.jobs || {};
     case `${REMOVE_JOB}_${ActionType.Fulfilled}`:
       delete draft[meta.id];
       return;
@@ -49,7 +49,7 @@ export default produce((draft, { type, payload, meta }) => {
       draft[meta.id].resume = payload.resume;
       return;
     case `${REMOVE_POSITION}_${ActionType.Fulfilled}`:
-      meta.jobs.forEach(id => {
+      meta.jobs.forEach((id) => {
         delete draft[id];
       });
       return;
@@ -61,7 +61,7 @@ export default produce((draft, { type, payload, meta }) => {
   }
 }, initialState);
 
-export const makeJobSelector = id => fp.get(['jobs', id]);
+export const makeJobSelector = (id) => fp.get(['jobs', id]);
 
-export const makeJobsSelector = positionId => state =>
-  _.get(state.positions, [positionId, 'jobs'], []).map(id => state.jobs[id]);
+export const makeJobsSelector = (positionId) => (state) =>
+  _.get(state.positions, [positionId, 'jobs'], []).map((id) => state.jobs[id]);

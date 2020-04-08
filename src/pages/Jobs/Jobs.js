@@ -76,7 +76,9 @@ export default () => {
 
   useEffect(() => {
     dispatch(getPositions()).then(({ value }) => {
-      setSelectedPositionId(parseInt(Object.keys(value.positions)[0]));
+      if (value.positions && Object.keys(value.positions).length) {
+        setSelectedPositionId(parseInt(Object.keys(value.positions)[0]));
+      }
     });
   }, [dispatch]);
 

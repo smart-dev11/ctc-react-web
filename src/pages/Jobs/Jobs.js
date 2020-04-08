@@ -80,8 +80,11 @@ export default () => {
     });
   }, [dispatch]);
 
-  const onDragEnd = ({ draggableId, destination: { index } }) => {
-    dispatch(movePosition(parseInt(draggableId), index + 1));
+  const onDragEnd = ({ draggableId, destination }) => {
+    if (!destination) {
+      return null;
+    }
+    dispatch(movePosition(parseInt(draggableId), destination.index + 1));
   };
 
   return (

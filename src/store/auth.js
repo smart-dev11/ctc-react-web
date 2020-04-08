@@ -8,40 +8,38 @@ export const LOGIN = 'LOGIN';
 export const REGISTER = 'REGISTER';
 export const LOGOUT = 'LOGOUT';
 
-export const register = (email, password) => dispatch =>
+export const register = (email, password) => (dispatch) =>
   dispatch({
     type: REGISTER,
     payload: delay(
       request
-        .post('/authentication/register', { email, password })
+        .post('/accounts/register', { email, password })
         .then(fp.get('data')),
       1500
-    )
-  }).then(data => {
+    ),
+  }).then((data) => {
     localStorage.setItem('token', data.token);
     return data;
   });
 
-export const login = (email, password) => dispatch =>
+export const login = (email, password) => (dispatch) =>
   dispatch({
     type: LOGIN,
     payload: delay(
-      request
-        .post('/authentication/login', { email, password })
-        .then(fp.get('data')),
+      request.post('/accounts/login', { email, password }).then(fp.get('data')),
       1500
-    )
+    ),
   }).then(({ value }) => {
     localStorage.setItem('token', value.token);
   });
 
-export const logout = () => dispatch => {
+export const logout = () => (dispatch) => {
   localStorage.removeItem('token');
   dispatch({ type: LOGOUT });
 };
 
 const initialState = {
-  loggedin: !!localStorage.getItem('token')
+  loggedin: !!localStorage.getItem('token'),
 };
 
 export default produce((draft, action) => {

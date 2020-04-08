@@ -12,7 +12,10 @@ const CardTitle = ({ children, ...props }) => (
   <div
     sx={{
       fontSize: 2,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      borderBottom: '1px solid',
+      borderColor: 'border',
+      pb: 3,
     }}
     {...props}
   >
@@ -30,7 +33,7 @@ const Keyword = ({ children, ...props }) => (
       borderRadius: 20,
       display: 'inline-block',
       mr: 4,
-      mb: 3
+      mb: 3,
     }}
     {...props}
   >
@@ -50,7 +53,7 @@ export default () => {
           boxShadow: 'medium',
           backgroundColor: 'white',
           p: 5,
-          mb: 12
+          mb: 12,
         }}
       >
         <JobDetail job={job}></JobDetail>
@@ -67,13 +70,13 @@ export default () => {
               sx={{
                 display: 'grid',
                 gridTemplateColumns: '1fr auto',
-                mb: 4
+                mb: 4,
               }}
             >
               <CardTitle>Matching Keywords</CardTitle>
               <CardTitle>8 / 15</CardTitle>
             </div>
-            {job.keywords.split(', ').map(keyword => (
+            {job.keywords.split(', ').map((keyword) => (
               <Keyword key={keyword}>{keyword}</Keyword>
             ))}
           </div>

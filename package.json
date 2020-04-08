@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "formik": "^2.1.4",
+    "html-react-parser": "^0.10.3",
     "immer": "^5.3.6",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",

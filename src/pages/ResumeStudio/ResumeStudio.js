@@ -7,39 +7,8 @@ import JobDetail from '../Jobs/JobDetail';
 import { useSelector } from 'react-redux';
 import { makeJobSelector } from '../../store/jobs';
 import Tab from '../../components/Tab';
-
-const CardTitle = ({ children, ...props }) => (
-  <div
-    sx={{
-      fontSize: 2,
-      fontWeight: 'bold',
-      borderBottom: '1px solid',
-      borderColor: 'border',
-      pb: 3,
-    }}
-    {...props}
-  >
-    {children}
-  </div>
-);
-
-const Keyword = ({ children, ...props }) => (
-  <div
-    sx={{
-      py: 2,
-      px: 5,
-      bg: 'border',
-      color: 'text',
-      borderRadius: 20,
-      display: 'inline-block',
-      mr: 4,
-      mb: 3,
-    }}
-    {...props}
-  >
-    {children}
-  </div>
-);
+import CardTitle from './CardTitle';
+import Keyword from './Keyword';
 
 export default () => {
   const { id } = useParams();

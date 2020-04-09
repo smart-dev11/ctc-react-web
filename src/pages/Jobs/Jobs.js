@@ -41,6 +41,7 @@ import Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import UpdateSuggest from './UpdateSuggest';
+import fp from 'lodash/fp';
 
 export default () => {
   const { theme } = useThemeUI();
@@ -76,9 +77,12 @@ export default () => {
 
   useEffect(() => {
     dispatch(getPositions()).then(({ value }) => {
-      if (value.positions && Object.keys(value.positions).length) {
-        setSelectedPositionId(parseInt(Object.keys(value.positions)[0]));
-      }
+      const getFirstPositionId = fp.compose(
+        fp.getOr(0, [0, 'id']),
+        fp.sortBy('order'),
+        fp.getOr([], 'positions')
+      );
+      setSelectedPositionId(getFirstPositionId(value));
     });
   }, [dispatch]);
 

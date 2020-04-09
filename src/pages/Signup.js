@@ -25,22 +25,20 @@ export default () => {
       fullName: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
     },
     validationSchema: Yup.object({
       fullName: Yup.string().required('Required'),
-      email: Yup.string()
-        .email('Invalid email address')
-        .required('Required'),
+      email: Yup.string().email('Invalid email address').required('Required'),
       password: Yup.string().required('Required'),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref('password'), null], 'Passwords do not match')
-        .required('Required')
+        .required('Required'),
     }),
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       await dispatch(register(values.email, values.password));
       history.replace('/');
-    }
+    },
   });
 
   return (
@@ -51,7 +49,7 @@ export default () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           <div
@@ -61,7 +59,7 @@ export default () => {
               px: 6,
               boxShadow: 'medium',
               textAlign: 'center',
-              backgroundColor: 'white'
+              backgroundColor: 'white',
             }}
           >
             <div sx={{ fontSize: 2, fontWeight: 'bold', mb: 10 }}>

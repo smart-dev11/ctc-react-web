@@ -8,7 +8,8 @@ import { useSelector } from 'react-redux';
 import { makeJobSelector } from '../../store/jobs';
 import Tab from '../../components/Tab';
 import CardTitle from './CardTitle';
-import Keyword from './Keyword';
+import parse from 'html-react-parser';
+import EllipableKeywords from './EllipableKeywords';
 
 export default () => {
   const { id } = useParams();
@@ -45,16 +46,14 @@ export default () => {
               <CardTitle>Matching Keywords</CardTitle>
               <CardTitle>8 / 15</CardTitle>
             </div>
-            {job.keywords.split(', ').map((keyword) => (
-              <Keyword key={keyword}>{keyword}</Keyword>
-            ))}
+            <EllipableKeywords keywords={job.keywords}></EllipableKeywords>
           </div>
           <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2, mt: 6 }}>
             Job Description
           </div>
           <div sx={{ boxShadow: 'medium', bg: 'white', p: 6 }}>
             <CardTitle>Digital Marketing Manager</CardTitle>
-            <div sx={{ fontSize: 2, mt: 3 }}>{job.description}</div>
+            <div sx={{ fontSize: 2, mt: 3 }}>{parse(job.description_html)}</div>
           </div>
         </div>
         <div>

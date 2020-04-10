@@ -17,6 +17,7 @@ export default ({ keywords, maxLines = 4 }) => {
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: `${maxLines}`,
+                color: 'transparent',
               }
         }
       >

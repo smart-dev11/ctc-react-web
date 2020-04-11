@@ -9,11 +9,30 @@ import { makeJobSelector } from '../../store/jobs';
 import Tab from '../../components/Tab';
 import CardTitle from './CardTitle';
 import parse from 'html-react-parser';
-import EllipableKeywords from './EllipableKeywords';
+import EllipsisKeywords from './EllipsisKeywords';
+import _ from 'lodash';
 
 export default () => {
   const { id } = useParams();
   const job = useSelector(makeJobSelector(id));
+
+  const getHighlight = (html, keywords) => {
+    return keywords
+      .filter(
+        (keyword) =>
+          !_.some(
+            keywords,
+            (otherKeyword) =>
+              otherKeyword.includes(keyword) && otherKeyword !== keyword
+          )
+      )
+      .reduce((result, keyword) => {
+        return result.replace(
+          new RegExp(keyword, 'ig'),
+          `<span class="keyword-highlight">${keyword}</span>`
+        );
+      }, html);
+  };
 
   return (
     <Page>
@@ -29,7 +48,7 @@ export default () => {
         <JobDetail job={job}></JobDetail>
       </div>
       <div
-        sx={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gridGap: 10 }}
+        sx={{ display: 'grid', gridTemplateColumns: '2fr 3fr', gridGap: 10 }}
       >
         <div>
           <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2 }}>
@@ -46,14 +65,30 @@ export default () => {
               <CardTitle>Matching Keywords</CardTitle>
               <CardTitle>8 / 15</CardTitle>
             </div>
-            <EllipableKeywords keywords={job.keywords}></EllipableKeywords>
+            <EllipsisKeywords keywords={job.keywords}></EllipsisKeywords>
           </div>
           <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2, mt: 6 }}>
             Job Description
           </div>
           <div sx={{ boxShadow: 'medium', bg: 'white', p: 6 }}>
             <CardTitle>Digital Marketing Manager</CardTitle>
-            <div sx={{ fontSize: 2, mt: 3 }}>{parse(job.description_html)}</div>
+            <div
+              sx={{
+                fontSize: 2,
+                mt: 3,
+                '.keyword-highlight': {
+                  bg: 'primary',
+                  color: 'white',
+                  py: '1px',
+                  px: '3px',
+                  borderRadius: 4,
+                },
+              }}
+            >
+              {parse(
+                getHighlight(job.description_html, job.keywords.split(', '))
+              )}
+            </div>
           </div>
         </div>
         <div>

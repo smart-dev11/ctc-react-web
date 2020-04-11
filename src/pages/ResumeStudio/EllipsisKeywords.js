@@ -4,7 +4,7 @@ import Keyword from './Keyword';
 import { useState } from 'react';
 import Link from '../../components/Link';
 
-export default ({ keywords, maxLines = 4 }) => {
+export default ({ keywords, maxLines = 3 }) => {
   const [expanded, setExpanded] = useState(false);
   return (
     <div>

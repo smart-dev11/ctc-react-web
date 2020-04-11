@@ -47,6 +47,7 @@ export default produce((draft, { type, payload, meta }) => {
       return;
     case `${UPLOAD_RESUME}_${ActionType.Fulfilled}`:
       draft[meta.id].resume = payload.resume;
+      draft[meta.id].resume_text = payload.resume_text;
       return;
     case `${REMOVE_POSITION}_${ActionType.Fulfilled}`:
       meta.jobs.forEach((id) => {

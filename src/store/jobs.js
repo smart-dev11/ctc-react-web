@@ -22,7 +22,10 @@ export const uploadResume = (id, file) => {
   formData.append('resume', file);
   return {
     type: UPLOAD_RESUME,
-    payload: delay(request.put(`/jobs/${id}/resume_upload/`, formData), 1500),
+    payload: delay(
+      request.put(`/jobs/${id}/resume_upload/`, formData).then(fp.get('data')),
+      1500
+    ),
     meta: { id },
   };
 };

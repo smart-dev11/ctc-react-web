@@ -10,11 +10,15 @@ import Tab from '../../components/Tab';
 import CardTitle from './CardTitle';
 import EllipsisKeywords from './EllipsisKeywords';
 import Description from './Description';
+import ResumeEdit from './ResumeEdit';
+import { useState } from 'react';
 
 export default () => {
   const { id } = useParams();
   const job = useSelector(makeJobSelector(id));
+  const [resumeText, setResumeText] = useState(job.resume_text);
 
+  console.log('resume', resumeText);
   // const getHighlight = (html, keywords) => {
   //   return keywords
   //     .filter(
@@ -70,7 +74,7 @@ export default () => {
             Job Description
           </div>
           <div sx={{ boxShadow: 'medium', bg: 'white', p: 6 }}>
-            <CardTitle>Digital Marketing Manager</CardTitle>
+            <CardTitle>{job.title}</CardTitle>
             <Description
               description={job.description}
               sx={{ mt: 2 }}
@@ -84,7 +88,12 @@ export default () => {
             </Tab>
             <Tab sx={{ py: 1, px: 12 }}>ATS Resume</Tab>
           </div>
-          <div sx={{ minHeight: 500, boxShadow: 'medium', bg: 'white' }}></div>
+          <div sx={{ minHeight: 500, boxShadow: 'medium', bg: 'white' }}>
+            <ResumeEdit
+              value={resumeText}
+              onChange={(e) => setResumeText(e.target.value)}
+            ></ResumeEdit>
+          </div>
         </div>
       </div>
     </Page>

@@ -77,6 +77,7 @@ export default () => {
             <CardTitle>{job.title}</CardTitle>
             <Description
               description={job.description}
+              keywords={job.keywords.split(', ')}
               sx={{ mt: 2 }}
             ></Description>
           </div>

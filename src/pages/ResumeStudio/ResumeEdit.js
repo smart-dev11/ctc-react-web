@@ -4,16 +4,18 @@ import TextareaAutoSize from 'react-autosize-textarea';
 
 export default (props) => {
   return (
-    <TextareaAutoSize
-      sx={{
-        width: '100%',
-        p: 10,
-        border: 'none',
-        fontSize: 2,
-        color: 'text',
-        ':focus': { outline: 'none' },
-      }}
-      {...props}
-    ></TextareaAutoSize>
+    <div sx={{ p: 6 }}>
+      <TextareaAutoSize
+        sx={{
+          width: '100%',
+          border: 'none',
+          fontSize: 2,
+          color: 'text',
+          resize: 'none',
+          ':focus': { outline: 'none' },
+        }}
+        {...props}
+      ></TextareaAutoSize>
+    </div>
   );
 };

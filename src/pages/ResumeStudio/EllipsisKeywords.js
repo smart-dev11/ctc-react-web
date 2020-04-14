@@ -2,7 +2,7 @@
 import { jsx } from 'theme-ui';
 import Keyword from './Keyword';
 import { useState } from 'react';
-import Link from '../../components/Link';
+import EllipsisTrigger from './EllipsisTrigger';
 
 export default ({ keywords, maxLines = 3 }) => {
   const [expanded, setExpanded] = useState(false);
@@ -25,17 +25,11 @@ export default ({ keywords, maxLines = 3 }) => {
           <Keyword key={keyword}>{keyword}</Keyword>
         ))}
       </div>
-
       <div sx={{ textAlign: 'center', mb: 3 }}>
-        {expanded ? (
-          <Link color="primary" onClick={() => setExpanded(false)}>
-            Less
-          </Link>
-        ) : (
-          <Link sx={{ fontSize: 4 }} onClick={() => setExpanded(true)}>
-            <i className="fas fa-ellipsis-h"></i>
-          </Link>
-        )}
+        <EllipsisTrigger
+          expanded={expanded}
+          setExpanded={setExpanded}
+        ></EllipsisTrigger>
       </div>
     </div>
   );

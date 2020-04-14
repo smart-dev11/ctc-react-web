@@ -8,31 +8,30 @@ import { useSelector } from 'react-redux';
 import { makeJobSelector } from '../../store/jobs';
 import Tab from '../../components/Tab';
 import CardTitle from './CardTitle';
-import parse from 'html-react-parser';
 import EllipsisKeywords from './EllipsisKeywords';
-import _ from 'lodash';
+import Description from './Description';
 
 export default () => {
   const { id } = useParams();
   const job = useSelector(makeJobSelector(id));
 
-  const getHighlight = (html, keywords) => {
-    return keywords
-      .filter(
-        (keyword) =>
-          !_.some(
-            keywords,
-            (otherKeyword) =>
-              otherKeyword.includes(keyword) && otherKeyword !== keyword
-          )
-      )
-      .reduce((result, keyword) => {
-        return result.replace(
-          new RegExp(keyword, 'ig'),
-          `<span class="keyword-highlight">${keyword}</span>`
-        );
-      }, html);
-  };
+  // const getHighlight = (html, keywords) => {
+  //   return keywords
+  //     .filter(
+  //       (keyword) =>
+  //         !_.some(
+  //           keywords,
+  //           (otherKeyword) =>
+  //             otherKeyword.includes(keyword) && otherKeyword !== keyword
+  //         )
+  //     )
+  //     .reduce((result, keyword) => {
+  //       return result.replace(
+  //         new RegExp(keyword, 'ig'),
+  //         `<span class="keyword-highlight">${keyword}</span>`
+  //       );
+  //     }, html);
+  // };
 
   return (
     <Page>
@@ -72,23 +71,10 @@ export default () => {
           </div>
           <div sx={{ boxShadow: 'medium', bg: 'white', p: 6 }}>
             <CardTitle>Digital Marketing Manager</CardTitle>
-            <div
-              sx={{
-                fontSize: 2,
-                mt: 3,
-                '.keyword-highlight': {
-                  bg: 'primary',
-                  color: 'white',
-                  py: '1px',
-                  px: '3px',
-                  borderRadius: 4,
-                },
-              }}
-            >
-              {parse(
-                getHighlight(job.description_html, job.keywords.split(', '))
-              )}
-            </div>
+            <Description
+              description={job.description}
+              sx={{ mt: 2 }}
+            ></Description>
           </div>
         </div>
         <div>

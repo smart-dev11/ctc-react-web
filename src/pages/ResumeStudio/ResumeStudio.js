@@ -12,30 +12,35 @@ import EllipsisKeywords from './EllipsisKeywords';
 import Description from './Description';
 import ResumeEdit from './ResumeEdit';
 import { useState } from 'react';
+import _ from 'lodash';
+import request from '../../utils/request';
+import { useEffect } from 'react';
 
 export default () => {
   const { id } = useParams();
   const job = useSelector(makeJobSelector(id));
   const [resumeText, setResumeText] = useState(job.resume_text);
+  const [matchingKeywords, setMatchingKeywords] = useState([]);
+  const [missingKeywords, setMissingKeywords] = useState([]);
 
-  console.log('resume', resumeText);
-  // const getHighlight = (html, keywords) => {
-  //   return keywords
-  //     .filter(
-  //       (keyword) =>
-  //         !_.some(
-  //           keywords,
-  //           (otherKeyword) =>
-  //             otherKeyword.includes(keyword) && otherKeyword !== keyword
-  //         )
-  //     )
-  //     .reduce((result, keyword) => {
-  //       return result.replace(
-  //         new RegExp(keyword, 'ig'),
-  //         `<span class="keyword-highlight">${keyword}</span>`
-  //       );
-  //     }, html);
-  // };
+  useEffect(() => {
+    const caculateKeywords = async () => {
+      const { data: resumeKeywords } = await request.post(
+        '/jobs/keyword_extract/',
+        {
+          text: job.resume_text,
+        }
+      );
+      if (!resumeKeywords) return;
+      setMatchingKeywords(
+        _.intersection(job.keywords.split(', '), resumeKeywords)
+      );
+      setMissingKeywords(
+        _.difference(job.keywords.split(', '), resumeKeywords)
+      );
+    };
+    caculateKeywords();
+  }, [job.resume_text, job.keywords]);
 
   return (
     <Page>
@@ -66,9 +71,26 @@ export default () => {
               }}
             >
               <CardTitle>Matching Keywords</CardTitle>
-              <CardTitle>8 / 15</CardTitle>
+              <CardTitle>
+                {matchingKeywords.length} /{' '}
+                {matchingKeywords.length + missingKeywords.length}
+              </CardTitle>
             </div>
-            <EllipsisKeywords keywords={job.keywords}></EllipsisKeywords>
+            <EllipsisKeywords keywords={matchingKeywords}></EllipsisKeywords>
+            <div
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: '1fr auto',
+                mb: 4,
+              }}
+            >
+              <CardTitle>Missing Keywords</CardTitle>
+              <CardTitle>
+                {missingKeywords.length} /{' '}
+                {matchingKeywords.length + missingKeywords.length}
+              </CardTitle>
+            </div>
+            <EllipsisKeywords keywords={missingKeywords}></EllipsisKeywords>
           </div>
           <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2, mt: 6 }}>
             Job Description

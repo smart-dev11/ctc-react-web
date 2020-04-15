@@ -21,7 +21,7 @@ export default ({ keywords, maxLines = 3 }) => {
               }
         }
       >
-        {keywords.split(', ').map((keyword) => (
+        {keywords.map((keyword) => (
           <Keyword key={keyword}>{keyword}</Keyword>
         ))}
       </div>

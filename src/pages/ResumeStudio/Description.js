@@ -27,9 +27,6 @@ export default ({ description, keywords, maxLines = 15, ...props }) => {
           '.keyword-highlight': {
             bg: 'primary',
             color: 'white',
-            py: '2px',
-            px: 1,
-            borderRadius: 4,
           },
         }}
         highlightClassName="keyword-highlight"

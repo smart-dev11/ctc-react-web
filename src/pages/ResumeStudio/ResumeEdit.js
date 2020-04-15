@@ -7,7 +7,10 @@ export default (props) => {
     <TextareaAutoSize
       sx={{
         width: '100%',
-        border: 'none',
+        border: '1px solid',
+        borderColor: 'border',
+        px: 3,
+        py: 2,
         fontSize: 2,
         color: 'text',
         resize: 'none',

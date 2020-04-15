@@ -22,7 +22,7 @@ export default ({ description, keywords, maxLines = 15, ...props }) => {
             fontSize: 2,
           },
           whiteSpace: 'pre-line',
-          wordBreak: 'break-all',
+          wordBreak: 'break-word',
           ...ellipsisStyle,
           '.keyword-highlight': {
             bg: 'primary',

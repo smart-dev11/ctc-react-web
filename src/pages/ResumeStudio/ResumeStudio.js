@@ -163,18 +163,41 @@ export default () => {
             <div sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button>Auto Update</Button>
               <div>
-                <Button>
-                  <i className="fas fa-pen"></i>
-                </Button>
-                <Button sx={{ ml: 2 }}>
+                {isEditing ? (
+                  <Button primary={false} onClick={() => setIsEditing(false)}>
+                    Save
+                  </Button>
+                ) : (
+                  <Button primary={false} onClick={() => setIsEditing(true)}>
+                    <div>
+                      <i className="fas fa-pen"></i>
+                    </div>
+                  </Button>
+                )}
+                <Button primary={false} sx={{ ml: 2 }}>
                   <i className="fas fa-download"></i>
                 </Button>
               </div>
             </div>
-            <ResumeEdit
-              value={resumeText}
-              onChange={(e) => setResumeText(e.target.value)}
-            ></ResumeEdit>
+            <div sx={{ mt: 8 }}>
+              {isEditing ? (
+                <ResumeEdit
+                  value={resumeText}
+                  onChange={(e) => setResumeText(e.target.value)}
+                ></ResumeEdit>
+              ) : (
+                <div
+                  sx={{
+                    fontSize: 2,
+                    whiteSpace: 'pre-line',
+                    wordBreak: 'break-word',
+                    mb: 0,
+                  }}
+                >
+                  {job.resume_text}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

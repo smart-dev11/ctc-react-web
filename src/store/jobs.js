@@ -9,6 +9,7 @@ import _ from 'lodash';
 export const REMOVE_JOB = 'REMOVE_JOB';
 export const UPLOAD_RESUME = 'UPLOAD_RESUME';
 export const CHANGE_JOB_POSITION = 'CHANGE_JOB_POSITION';
+export const SAVE_JOB = 'SAVE_JOB';
 
 export const removeJob = (id) => (dispatch, getState) =>
   dispatch({
@@ -39,6 +40,14 @@ export const changeJobPosition = (job, position) => ({
   meta: { job, position },
 });
 
+export const saveJob = (job) => ({
+  type: SAVE_JOB,
+  payload: delay(
+    request.put(`/jobs/${job.id}/`, job).then(fp.get('data')),
+    1500
+  ),
+});
+
 const initialState = {};
 
 export default produce((draft, { type, payload, meta }) => {
@@ -59,6 +68,9 @@ export default produce((draft, { type, payload, meta }) => {
       return;
     case `${CHANGE_JOB_POSITION}_${ActionType.Fulfilled}`:
       draft[meta.job.id].position = meta.position.id;
+      return;
+    case `${SAVE_JOB}_${ActionType.Fulfilled}`:
+      draft[payload.id] = payload;
       return;
     default:
       return;

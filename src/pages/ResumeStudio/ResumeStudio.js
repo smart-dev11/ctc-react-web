@@ -1,58 +1,45 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import JobDetail from '../Jobs/JobDetail';
-import { useSelector } from 'react-redux';
-import { makeJobSelector } from '../../store/jobs';
+import { useSelector, useDispatch } from 'react-redux';
+import { makeJobSelector, SAVE_JOB, saveJob } from '../../store/jobs';
 import Tab from '../../components/Tab';
 import CardTitle from './CardTitle';
 import EllipsisKeywords from './EllipsisKeywords';
 import Description from './Description';
 import ResumeEdit from './ResumeEdit';
 import Button from '../../components/Button';
-import { useState, Fragment } from 'react';
 import _ from 'lodash';
-import request from '../../utils/request';
-import { useEffect } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import HashLoader from 'react-spinners/HashLoader';
 import 'react-circular-progressbar/dist/styles.css';
-import delay from 'p-min-delay';
 import { useThemeUI } from 'theme-ui';
+import { makeLoadingSelector } from '../../store/loading';
+import LoadingOverlay from '../../components/LoadingOverlay';
+
+const getMatchingKeywords = (keywords, resumeText) =>
+  keywords
+    .split(', ')
+    .filter((keyword) =>
+      resumeText.toLowerCase().includes(keyword.toLowerCase())
+    );
 
 export default () => {
   const { id } = useParams();
   const { theme } = useThemeUI();
   const job = useSelector(makeJobSelector(id));
   const [resumeText, setResumeText] = useState(job.resume_text);
-  const [matchingKeywords, setMatchingKeywords] = useState([]);
-  const [missingKeywords, setMissingKeywords] = useState([]);
-  const [isCaculating, setIsCaculating] = useState(false);
+  const matches = getMatchingKeywords(job.keywords, job.resume_text);
+  const [matchingKeywords, setMatchingKeywords] = useState(matches);
+  const [missingKeywords, setMissingKeywords] = useState(
+    _.difference(job.keywords.split(', '), matches)
+  );
   const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    const caculateKeywords = async () => {
-      setIsCaculating(true);
-      try {
-        const { data: resumeKeywords } = await delay(
-          request.post('/jobs/keyword_extract/', {
-            text: job.resume_text,
-          }),
-          1500
-        );
-        setMatchingKeywords(
-          _.intersection(job.keywords.split(', '), resumeKeywords)
-        );
-        setMissingKeywords(
-          _.difference(job.keywords.split(', '), resumeKeywords)
-        );
-      } catch (e) {}
-      setIsCaculating(false);
-    };
-    caculateKeywords();
-  }, [job.resume_text, job.keywords]);
+  const isSaving = useSelector(makeLoadingSelector([SAVE_JOB]));
+  const dispatch = useDispatch();
 
   return (
     <Page>
@@ -75,70 +62,60 @@ export default () => {
             Resume Scorecard
           </div>
           <div sx={{ boxShadow: 'medium', backgroundColor: 'white', p: 6 }}>
-            {isCaculating ? (
-              <div sx={{ display: 'flex', justifyContent: 'center', py: 7 }}>
-                <HashLoader color={theme.colors.primary}></HashLoader>
-              </div>
-            ) : (
-              <Fragment>
-                <div
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    py: 6,
-                    mb: 5,
-                  }}
-                >
-                  <CircularProgressbar
-                    value={
-                      (matchingKeywords.length * 100) /
-                      (matchingKeywords.length + missingKeywords.length)
-                    }
-                    text={`${
-                      (matchingKeywords.length * 100) /
-                      (matchingKeywords.length + missingKeywords.length)
-                    }%`}
-                    styles={buildStyles({
-                      pathColor: theme.colors.primary,
-                      textColor: theme.colors.primary,
-                      trailColor: theme.colors.placeholder,
-                    })}
-                    strokeWidth={6}
-                    sx={{ width: '60%' }}
-                  />
-                </div>
-                <div
-                  sx={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr auto',
-                    mb: 4,
-                  }}
-                >
-                  <CardTitle>Matching Keywords</CardTitle>
-                  <CardTitle>
-                    {matchingKeywords.length} /{' '}
-                    {matchingKeywords.length + missingKeywords.length}
-                  </CardTitle>
-                </div>
-                <EllipsisKeywords
-                  keywords={matchingKeywords}
-                ></EllipsisKeywords>
-                <div
-                  sx={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr auto',
-                    mb: 4,
-                  }}
-                >
-                  <CardTitle>Missing Keywords</CardTitle>
-                  <CardTitle>
-                    {missingKeywords.length} /{' '}
-                    {matchingKeywords.length + missingKeywords.length}
-                  </CardTitle>
-                </div>
-                <EllipsisKeywords keywords={missingKeywords}></EllipsisKeywords>
-              </Fragment>
-            )}
+            <div
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                py: 6,
+                mb: 5,
+              }}
+            >
+              <CircularProgressbar
+                value={
+                  (matchingKeywords.length * 100) /
+                  (matchingKeywords.length + missingKeywords.length)
+                }
+                text={`${
+                  (matchingKeywords.length * 100) /
+                  (matchingKeywords.length + missingKeywords.length)
+                }%`}
+                styles={buildStyles({
+                  pathColor: theme.colors.primary,
+                  textColor: theme.colors.primary,
+                  trailColor: theme.colors.placeholder,
+                })}
+                strokeWidth={6}
+                sx={{ width: '60%' }}
+              />
+            </div>
+            <div
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: '1fr auto',
+                mb: 4,
+              }}
+            >
+              <CardTitle>Matching Keywords</CardTitle>
+              <CardTitle>
+                {matchingKeywords.length} /{' '}
+                {matchingKeywords.length + missingKeywords.length}
+              </CardTitle>
+            </div>
+            <EllipsisKeywords keywords={matchingKeywords}></EllipsisKeywords>
+            <div
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: '1fr auto',
+                mb: 4,
+              }}
+            >
+              <CardTitle>Missing Keywords</CardTitle>
+              <CardTitle>
+                {missingKeywords.length} /{' '}
+                {matchingKeywords.length + missingKeywords.length}
+              </CardTitle>
+            </div>
+            <EllipsisKeywords keywords={missingKeywords}></EllipsisKeywords>
           </div>
           <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2, mt: 6 }}>
             Job Description
@@ -160,44 +137,76 @@ export default () => {
             <Tab sx={{ py: 1, px: 12 }}>ATS Resume</Tab>
           </div>
           <div sx={{ minHeight: 500, boxShadow: 'medium', bg: 'white', p: 5 }}>
-            <div sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Button>Auto Update</Button>
-              <div>
-                {isEditing ? (
-                  <Button primary={false} onClick={() => setIsEditing(false)}>
-                    Save
-                  </Button>
-                ) : (
-                  <Button primary={false} onClick={() => setIsEditing(true)}>
-                    <div>
-                      <i className="fas fa-pen"></i>
-                    </div>
-                  </Button>
-                )}
-                <Button primary={false} sx={{ ml: 2 }}>
-                  <i className="fas fa-download"></i>
-                </Button>
-              </div>
-            </div>
-            <div sx={{ mt: 8 }}>
-              {isEditing ? (
-                <ResumeEdit
-                  value={resumeText}
-                  onChange={(e) => setResumeText(e.target.value)}
-                ></ResumeEdit>
-              ) : (
-                <div
-                  sx={{
-                    fontSize: 2,
-                    whiteSpace: 'pre-line',
-                    wordBreak: 'break-word',
-                    mb: 0,
+            {isEditing ? (
+              <div sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  onClick={async () => {
+                    await dispatch(
+                      saveJob({ ...job, resume_text: resumeText })
+                    );
+                    setIsEditing(false);
                   }}
                 >
-                  {job.resume_text}
+                  <span sx={{ fontSize: 3, mr: 2 }}>
+                    <i className="fas fa-save"></i>
+                  </span>
+                  Save
+                </Button>
+                <Button
+                  primary={false}
+                  onClick={async () => {
+                    setResumeText(job.resume_text);
+                    setIsEditing(false);
+                  }}
+                  sx={{ ml: 2 }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            ) : (
+              <div sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button>Auto Update</Button>
+                <div>
+                  <Button primary={false} onClick={() => setIsEditing(true)}>
+                    <i className="fas fa-pen"></i>
+                  </Button>
+                  <Button primary={false} sx={{ ml: 2 }}>
+                    <i className="fas fa-download"></i>
+                  </Button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+            <LoadingOverlay loading={isSaving}>
+              <div sx={{ mt: 8 }}>
+                {isEditing ? (
+                  <ResumeEdit
+                    value={resumeText}
+                    onChange={(e) => {
+                      setResumeText(e.target.value);
+                      const matches = getMatchingKeywords(
+                        job.keywords,
+                        e.target.value
+                      );
+                      setMatchingKeywords(matches);
+                      setMissingKeywords(
+                        _.difference(job.keywords.split(', '), matches)
+                      );
+                    }}
+                  ></ResumeEdit>
+                ) : (
+                  <div
+                    sx={{
+                      fontSize: 2,
+                      whiteSpace: 'pre-line',
+                      wordBreak: 'break-word',
+                      mb: 0,
+                    }}
+                  >
+                    {job.resume_text}
+                  </div>
+                )}
+              </div>
+            </LoadingOverlay>
           </div>
         </div>
       </div>

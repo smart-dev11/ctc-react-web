@@ -130,11 +130,14 @@ export default () => {
           </div>
         </div>
         <div>
-          <div sx={{ display: 'flex' }}>
+          {/* <div sx={{ display: 'flex' }}>
             <Tab active sx={{ py: 1, px: 12 }}>
               Resume
             </Tab>
             <Tab sx={{ py: 1, px: 12 }}>ATS Resume</Tab>
+          </div> */}
+          <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2 }}>
+            Resume Scorecard
           </div>
           <div sx={{ minHeight: 500, boxShadow: 'medium', bg: 'white', p: 5 }}>
             {isEditing ? (

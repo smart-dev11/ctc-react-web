@@ -48,10 +48,17 @@ export default ({
         <Link onClick={onUploadClick}>
           <i className="fas fa-upload"></i>
         </Link>
-        <Link onClick={onEditClick}>
+        <Link
+          onClick={() =>
+            job.resume ? onEditClick() : alert('Resume is not uploaded')
+          }
+        >
           <i className="fas fa-pen"></i>
         </Link>
-        <Link>
+        <Link
+          href={job.resume || undefined}
+          onClick={() => !job.resume && alert('Resume is not uploaded')}
+        >
           <i className="fas fa-download"></i>
         </Link>
         <Link

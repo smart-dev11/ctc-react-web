@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { Fragment } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import Input from './Input';
 import Link from './Link';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,6 +10,7 @@ import { logout } from '../store/auth';
 
 export default () => {
   const history = useHistory();
+  const location = useLocation();
   const loggedin = useSelector(fp.get('auth.loggedin'));
   const dispatch = useDispatch();
 
@@ -28,7 +29,7 @@ export default () => {
         py: 4,
         boxShadow: 'medium',
         bg: 'white',
-        zIndex: 1
+        zIndex: 1,
       }}
     >
       <div
@@ -37,13 +38,14 @@ export default () => {
           display: 'flex',
           flexDirection: ['column', 'row'],
           alignItems: 'center',
-          width: ['100%', '100%', 'auto']
+          width: ['100%', '100%', 'auto'],
         }}
       >
         <img
           src={require('../assets/logo.png')}
           alt="Logo"
-          sx={{ pr: [0, 11], ml: -4 }}
+          sx={{ pr: [0, 11], ml: -4, cursor: 'pointer' }}
+          onClick={() => location.pathname !== '/' && history.push('/')}
         ></img>
         <Input
           leftComponent={
@@ -57,7 +59,7 @@ export default () => {
             flex: 1,
             mt: [4, 0],
             width: ['100%', 'auto'],
-            maxWidth: 545
+            maxWidth: 545,
           }}
           inputSx={{ py: 2, fontSize: 2 }}
         ></Input>
@@ -69,7 +71,7 @@ export default () => {
           alignItems: 'center',
           mt: [4, 4, 0],
           ml: [0, 0, 11],
-          width: ['100%', '100%', 'auto']
+          width: ['100%', '100%', 'auto'],
         }}
       >
         {loggedin && (

@@ -19,13 +19,7 @@ import { useThemeUI } from 'theme-ui';
 import { makeLoadingSelector } from '../../store/loading';
 import LoadingOverlay from '../../components/LoadingOverlay';
 import Highlighter from 'react-highlight-words';
-
-const getMatchingKeywords = (keywords, resumeText) =>
-  keywords
-    .split(', ')
-    .filter((keyword) =>
-      resumeText.toLowerCase().includes(keyword.toLowerCase())
-    );
+import getMatchingKeywords from './getMatchingKeywords';
 
 export default () => {
   const { id } = useParams();
@@ -41,6 +35,7 @@ export default () => {
   const [isEditing, setIsEditing] = useState(false);
   const isSaving = useSelector(makeLoadingSelector([SAVE_JOB]));
   const dispatch = useDispatch();
+  const [hoveredKeyword, setHoveredKeyword] = useState('');
 
   return (
     <Page>
@@ -102,7 +97,10 @@ export default () => {
                 {matchingKeywords.length + missingKeywords.length}
               </CardTitle>
             </div>
-            <EllipsisKeywords keywords={matchingKeywords}></EllipsisKeywords>
+            <EllipsisKeywords
+              keywords={matchingKeywords}
+              onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
+            ></EllipsisKeywords>
             <div
               sx={{
                 display: 'grid',
@@ -216,7 +214,7 @@ export default () => {
                         color: 'white',
                       },
                     }}
-                    searchWords={['design']}
+                    searchWords={[hoveredKeyword]}
                     textToHighlight={job.resume_text}
                   ></Highlighter>
                 )}

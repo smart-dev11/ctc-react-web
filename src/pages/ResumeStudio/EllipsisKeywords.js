@@ -4,7 +4,7 @@ import Keyword from './Keyword';
 import { useState } from 'react';
 import EllipsisTrigger from './EllipsisTrigger';
 
-export default ({ keywords, maxLines = 3 }) => {
+export default ({ keywords, maxLines = 3, onHoverKeyword = () => {} }) => {
   const [expanded, setExpanded] = useState(false);
   return (
     <div>
@@ -22,7 +22,13 @@ export default ({ keywords, maxLines = 3 }) => {
         }
       >
         {keywords.map((keyword) => (
-          <Keyword key={keyword}>{keyword}</Keyword>
+          <Keyword
+            key={keyword}
+            onMouseEnter={() => onHoverKeyword(keyword)}
+            onMouseLeave={() => onHoverKeyword('')}
+          >
+            {keyword}
+          </Keyword>
         ))}
       </div>
       <div sx={{ textAlign: 'center', mb: 3 }}>

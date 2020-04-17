@@ -27,50 +27,74 @@ export default ({
       sx={{
         p: 5,
         display: 'grid',
-        gridTemplateColumns: job.resume
-          ? '2fr 110px 1fr auto auto'
-          : '2fr 1fr auto',
-        gridGap: 40,
+        gridTemplateColumns: '1fr 1fr',
+        gridGap: 25,
         alignItems: 'center',
         opacity: isDragging ? 0.5 : 1,
       }}
       {...props}
     >
       <JobDetail job={job}></JobDetail>
-      <div>
-        <Moment format="MMM D, YYYY">{job.created_at}</Moment>
-      </div>
-      {job.resume ? (
-        <Fragment>
-          <div
-            sx={{ fontSize: 5, color: job.score >= 0.8 ? 'primary' : 'border' }}
-          >
-            <i className="fas fa-check"></i>
-          </div>
-          <div
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, auto)',
-              gridGap: 4,
-              justifyContent: 'center',
-            }}
-          >
-            <Link onClick={onUploadClick}>
-              <i className="fas fa-upload"></i>
-            </Link>
-            <Link
-              onClick={() =>
-                job.resume ? onEditClick() : alert('Resume is not uploaded')
-              }
+      <div
+        sx={{
+          display: 'grid',
+          gridGap: 25,
+          alignItems: 'center',
+          gridTemplateColumns: job.resume
+            ? '110px 1fr auto 115px'
+            : '1fr auto 115px',
+        }}
+      >
+        <div>
+          <Moment format="MMM D, YYYY">{job.created_at}</Moment>
+        </div>
+        {job.resume ? (
+          <Fragment>
+            <div
+              sx={{
+                fontSize: 5,
+                color: job.score >= 0.8 ? 'primary' : 'border',
+              }}
             >
-              <i className="fas fa-pen"></i>
-            </Link>
-            <Link
-              href={job.resume || undefined}
-              onClick={() => !job.resume && alert('Resume is not uploaded')}
+              <i className="fas fa-check"></i>
+            </div>
+            <div
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, auto)',
+                gridGap: 4,
+                justifyContent: 'center',
+              }}
             >
-              <i className="fas fa-download"></i>
-            </Link>
+              <Link onClick={onUploadClick}>
+                <i className="fas fa-upload"></i>
+              </Link>
+              <Link
+                onClick={() =>
+                  job.resume ? onEditClick() : alert('Resume is not uploaded')
+                }
+              >
+                <i className="fas fa-pen"></i>
+              </Link>
+              <Link
+                href={job.resume || undefined}
+                onClick={() => !job.resume && alert('Resume is not uploaded')}
+              >
+                <i className="fas fa-download"></i>
+              </Link>
+              <Link
+                onClick={() =>
+                  window.confirm(`Are you user to remove ${job.title}`) &&
+                  onRemoveClick()
+                }
+              >
+                <i className="fas fa-trash"></i>
+              </Link>
+            </div>
+            <Button onClick={onApply}>Apply</Button>
+          </Fragment>
+        ) : (
+          <Fragment>
             <Link
               onClick={() =>
                 window.confirm(`Are you user to remove ${job.title}`) &&
@@ -79,14 +103,12 @@ export default ({
             >
               <i className="fas fa-trash"></i>
             </Link>
-          </div>
-          <Button onClick={onApply}>Apply</Button>
-        </Fragment>
-      ) : (
-        <Button onClick={onUploadClick}>
-          <i className="fas fa-upload"></i> Upload
-        </Button>
-      )}
+            <Button onClick={onUploadClick}>
+              <i className="fas fa-upload"></i> Upload
+            </Button>
+          </Fragment>
+        )}
+      </div>
     </div>
   );
 };

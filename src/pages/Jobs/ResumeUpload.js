@@ -15,28 +15,29 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
     padding: 0,
     border: 'none',
-    borderRadius: 0
+    borderRadius: 0,
   },
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
-    zIndex: 2
-  }
+    zIndex: 2,
+  },
 };
 
 export default ({ isOpen, onClose, onUpload }) => {
-  const [fileName, setFileName] = useState('');
+  const [file, setFile] = useState(null);
+  const [previousFile, setPreviousFile] = useState(null);
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: files => {
+    onDrop: (files) => {
       if (!files.length) return;
-      onUpload(files[0]);
-    }
+      setFile(files[0]);
+    },
   });
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={() => {
         onClose();
-        setFileName('');
+        setFile(null);
       }}
       style={customStyles}
       ariaHideApp={false}
@@ -48,7 +49,7 @@ export default ({ isOpen, onClose, onUpload }) => {
           pt: 13,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <div
@@ -60,16 +61,35 @@ export default ({ isOpen, onClose, onUpload }) => {
             alignItems: 'center',
             flexDirection: 'column',
             width: 585,
-            height: 265
+            height: 265,
           }}
           {...getRootProps()}
         >
           <input {...getInputProps()}></input>
           <i className="fas fa-upload" sx={{ fontSize: 7 }}></i>
-          <div sx={{ fontSize: 3, mt: 3 }}>{fileName || 'Drag and drop'}</div>
+          <div sx={{ fontSize: 3, mt: 3 }}>
+            {file ? file.name : 'Drag and drop'}
+          </div>
         </div>
         <div sx={{ mt: 9 }}>
-          <Button onClick={onClose}>
+          {previousFile && (
+            <Button primary={false} onClick={() => setFile(previousFile)}>
+              Use previous resume
+            </Button>
+          )}
+          <Button
+            onClick={() => {
+              if (file) {
+                setPreviousFile(file);
+                onUpload(file);
+                setFile(null);
+                onClose();
+              } else {
+                alert('Please drag and drop the resume file');
+              }
+            }}
+            sx={{ ml: 3 }}
+          >
             Upload resume <i className="fas fa-plus"></i>
           </Button>
         </div>

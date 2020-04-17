@@ -14,6 +14,8 @@ export default ({ description, keywords, maxLines = 15, ...props }) => {
         WebkitBoxOrient: 'vertical',
         WebkitLineClamp: `${maxLines}`,
       };
+
+  console.log(description);
   return (
     <div>
       <Highlighter

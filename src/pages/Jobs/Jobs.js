@@ -242,8 +242,12 @@ export default () => {
                       }}
                       onEditClick={() => history.push(`/${job.id}`)}
                       onApply={() => {
-                        setIsSuggestOpen(true);
-                        setProceedUrl(job.url);
+                        if (job.score >= 0.8) {
+                          window.open(job.url);
+                        } else {
+                          setIsSuggestOpen(true);
+                          setProceedUrl(job.url);
+                        }
                       }}
                     ></Job>
                   ))}
@@ -257,10 +261,7 @@ export default () => {
         <ResumeUpload
           isOpen={isUploadOpen}
           onClose={() => setIsUploadOpen(false)}
-          onUpload={(file) => {
-            dispatch(uploadResume(uploadJobId, file));
-            setIsUploadOpen(false);
-          }}
+          onUpload={(file) => dispatch(uploadResume(uploadJobId, file))}
         ></ResumeUpload>
         <UpdateSuggest
           isOpen={isSuggestOpen}

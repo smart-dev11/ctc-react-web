@@ -12,6 +12,7 @@ export default ({ children, ...props }) => (
       display: 'inline-block',
       mr: 4,
       mb: 3,
+      cursor: 'pointer',
     }}
     {...props}
   >

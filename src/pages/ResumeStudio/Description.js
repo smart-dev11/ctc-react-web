@@ -19,6 +19,9 @@ export default ({ description, keywords, maxLines = 15, ...props }) => {
   return (
     <div>
       <Highlighter
+        highlightClassName="keyword-highlight"
+        searchWords={keywords}
+        textToHighlight={description}
         sx={{
           '*': {
             fontSize: 2,
@@ -31,13 +34,8 @@ export default ({ description, keywords, maxLines = 15, ...props }) => {
             color: 'white',
           },
         }}
-        highlightClassName="keyword-highlight"
-        searchWords={keywords}
-        textToHighlight={description}
         {...props}
-      >
-        {description}
-      </Highlighter>
+      ></Highlighter>
       <div sx={{ textAlign: 'center', mb: 3 }}>
         <EllipsisTrigger
           expanded={expanded}

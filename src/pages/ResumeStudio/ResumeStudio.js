@@ -18,6 +18,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import { useThemeUI } from 'theme-ui';
 import { makeLoadingSelector } from '../../store/loading';
 import LoadingOverlay from '../../components/LoadingOverlay';
+import Highlighter from 'react-highlight-words';
 
 const getMatchingKeywords = (keywords, resumeText) =>
   keywords
@@ -121,7 +122,7 @@ export default () => {
             Job Description
           </div>
           <div sx={{ boxShadow: 'medium', bg: 'white', p: 6 }}>
-            <CardTitle>{job.title}</CardTitle>
+            <CardTitle sx={{ mb: 4 }}>{job.title}</CardTitle>
             <Description
               description={job.description}
               keywords={keywords}
@@ -201,16 +202,23 @@ export default () => {
                     }}
                   ></ResumeEdit>
                 ) : (
-                  <div
+                  <Highlighter
+                    highlightClassName="keyword-highlight"
                     sx={{
-                      fontSize: 2,
+                      '*': {
+                        fontSize: 2,
+                      },
                       whiteSpace: 'pre-line',
                       wordBreak: 'break-word',
                       mb: 0,
+                      '.keyword-highlight': {
+                        bg: 'primary',
+                        color: 'white',
+                      },
                     }}
-                  >
-                    {job.resume_text}
-                  </div>
+                    searchWords={['design']}
+                    textToHighlight={job.resume_text}
+                  ></Highlighter>
                 )}
               </div>
             </LoadingOverlay>

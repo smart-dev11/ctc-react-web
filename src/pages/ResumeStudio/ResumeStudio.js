@@ -7,7 +7,6 @@ import PageTitle from '../../components/PageTitle';
 import JobDetail from '../Jobs/JobDetail';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeJobSelector, SAVE_JOB, saveJob } from '../../store/jobs';
-import Tab from '../../components/Tab';
 import CardTitle from './CardTitle';
 import EllipsisKeywords from './EllipsisKeywords';
 import Description from './Description';
@@ -31,11 +30,12 @@ export default () => {
   const { id } = useParams();
   const { theme } = useThemeUI();
   const job = useSelector(makeJobSelector(id));
+  const keywords = job.keywords.split(', ');
   const [resumeText, setResumeText] = useState(job.resume_text);
   const matches = getMatchingKeywords(job.keywords, job.resume_text);
   const [matchingKeywords, setMatchingKeywords] = useState(matches);
   const [missingKeywords, setMissingKeywords] = useState(
-    _.difference(job.keywords.split(', '), matches)
+    _.difference(keywords, matches)
   );
   const [isEditing, setIsEditing] = useState(false);
   const isSaving = useSelector(makeLoadingSelector([SAVE_JOB]));
@@ -124,7 +124,7 @@ export default () => {
             <CardTitle>{job.title}</CardTitle>
             <Description
               description={job.description}
-              keywords={job.keywords.split(', ')}
+              keywords={keywords}
               sx={{ mt: 2 }}
             ></Description>
           </div>
@@ -137,7 +137,7 @@ export default () => {
             <Tab sx={{ py: 1, px: 12 }}>ATS Resume</Tab>
           </div> */}
           <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2 }}>
-            Resume Scorecard
+            Resume
           </div>
           <div sx={{ minHeight: 500, boxShadow: 'medium', bg: 'white', p: 5 }}>
             {isEditing ? (
@@ -145,7 +145,13 @@ export default () => {
                 <Button
                   onClick={async () => {
                     await dispatch(
-                      saveJob({ ...job, resume_text: resumeText })
+                      saveJob({
+                        ...job,
+                        resume_text: resumeText,
+                        score:
+                          matchingKeywords.length /
+                          (matchingKeywords.length + missingKeywords.length),
+                      })
                     );
                     setIsEditing(false);
                   }}
@@ -191,9 +197,7 @@ export default () => {
                         e.target.value
                       );
                       setMatchingKeywords(matches);
-                      setMissingKeywords(
-                        _.difference(job.keywords.split(', '), matches)
-                      );
+                      setMissingKeywords(_.difference(keywords, matches));
                     }}
                   ></ResumeEdit>
                 ) : (

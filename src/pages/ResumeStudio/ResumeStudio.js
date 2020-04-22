@@ -12,13 +12,13 @@ import EllipsisKeywords from "./EllipsisKeywords";
 import Description from "./Description";
 import ResumeEdit from "./ResumeEdit";
 import Button from "../../components/Button";
-import fp from "lodash/fp";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useThemeUI } from "theme-ui";
 import { makeLoadingSelector } from "../../store/loading";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import Highlighter from "react-highlight-words";
+import fp from "lodash/fp";
 import {
   getMatchingKeywords,
   getSimilarKeywords,
@@ -35,9 +35,20 @@ export default () => {
   const [isEditing, setIsEditing] = useState(false);
   const [hoveredKeyword, setHoveredKeyword] = useState("");
 
-  const matchingKeywords = getMatchingKeywords(job.keywords, job.resume_keywords);
+  const matchingKeywords = getMatchingKeywords(
+    job.keywords,
+    job.resume_keywords
+  );
   const similarKeywords = getSimilarKeywords(job.keywords, job.resume_keywords);
   const missingKeywords = getMissingKeywords(job.keywords, job.resume_keywords);
+
+  const getSearchWord = (hoveredKeyword) => {
+    const keyword = fp.find(
+      { skill: hoveredKeyword.skill },
+      job.resume_keywords
+    );
+    return keyword ? keyword.value : "";
+  };
 
   return (
     <Page>
@@ -87,14 +98,16 @@ export default () => {
               onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
             ></EllipsisKeywords>
             <EllipsisKeywords
-              title="Missing Keywords"
-              info={`${missingKeywords.length} / ${job.keywords.length}`}
-              keywords={missingKeywords}
-            ></EllipsisKeywords>
-            <EllipsisKeywords
               title="Similar Keywords"
               info={`${similarKeywords.length} / ${job.keywords.length}`}
               keywords={similarKeywords}
+              onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
+            ></EllipsisKeywords>
+            <EllipsisKeywords
+              title="Missing Keywords"
+              info={`${missingKeywords.length} / ${job.keywords.length}`}
+              keywords={missingKeywords}
+              onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
             ></EllipsisKeywords>
           </div>
           <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2, mt: 6 }}>
@@ -104,7 +117,7 @@ export default () => {
             <CardTitle sx={{ mb: 4 }}>{job.title}</CardTitle>
             <Description
               description={job.description}
-              // keywords={fp.map("value", job.keywords)}
+              keywords={[hoveredKeyword.value]}
               sx={{ mt: 2 }}
             ></Description>
           </div>
@@ -187,7 +200,7 @@ export default () => {
                         color: "white",
                       },
                     }}
-                    searchWords={[hoveredKeyword]}
+                    searchWords={[getSearchWord(hoveredKeyword)]}
                     textToHighlight={job.resume_text}
                   ></Highlighter>
                 )}

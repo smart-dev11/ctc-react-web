@@ -13,8 +13,8 @@ export const getSimilarKeywords = (keywords, resumeKeywords) => {
   const matchingKeywords = getMatchingKeywords(keywords, resumeKeywords);
   return fp.differenceWith(
     fp.isEqual,
+    keywords.filter((keyword) => resumeSkills.includes(keyword.skill)),
     matchingKeywords,
-    keywords.filter((keyword) => resumeSkills.includes(keyword.skill))
   );
 };
 
@@ -23,7 +23,7 @@ export const getMissingKeywords = (keywords, resumeKeywords) => {
   const similarKeywords = getSimilarKeywords(keywords, resumeKeywords);
   return fp.differenceWith(
     fp.isEqual,
+    keywords,
     [...matchingKeywords, ...similarKeywords],
-    keywords
   );
 };

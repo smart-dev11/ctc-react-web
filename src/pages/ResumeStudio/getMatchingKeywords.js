@@ -1,6 +1,9 @@
+
+
 export default (keywords, resumeText) =>
   keywords
-    .split(', ')
+    .split(", ")
     .filter((keyword) =>
       resumeText.toLowerCase().includes(keyword.toLowerCase())
     );
+

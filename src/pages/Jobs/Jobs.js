@@ -75,6 +75,8 @@ export default () => {
   const [proceedUrl, setProceedUrl] = useState('');
   const jobs = useSelector(makeJobsSelector(selectedPositionId));
 
+  console.log(jobs);
+
   useEffect(() => {
     dispatch(getPositions()).then(({ value }) => {
       const getFirstPositionId = fp.compose(

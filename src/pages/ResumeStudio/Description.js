@@ -15,7 +15,6 @@ export default ({ description, keywords, maxLines = 15, ...props }) => {
         WebkitLineClamp: `${maxLines}`,
       };
 
-  console.log(description);
   return (
     <div>
       <Highlighter

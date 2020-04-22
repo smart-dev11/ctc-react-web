@@ -4,7 +4,7 @@ import { useState } from 'react';
 import EllipsisTrigger from './EllipsisTrigger';
 import Highlighter from 'react-highlight-words';
 
-export default ({ description, keywords, maxLines = 15, ...props }) => {
+export default ({ description, keywords = [], maxLines = 15, ...props }) => {
   const [expanded, setExpanded] = useState(false);
   const ellipsisStyle = expanded
     ? {}

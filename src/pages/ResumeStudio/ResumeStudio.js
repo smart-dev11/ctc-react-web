@@ -70,7 +70,7 @@ export default () => {
             >
               <CircularProgressbar
                 value={job.score * 100}
-                text={`${job.score * 100}%`}
+                text={`${(job.score * 100).toFixed(2)}%`}
                 styles={buildStyles({
                   pathColor: theme.colors.primary,
                   textColor: theme.colors.primary,
@@ -104,7 +104,7 @@ export default () => {
             <CardTitle sx={{ mb: 4 }}>{job.title}</CardTitle>
             <Description
               description={job.description}
-              keywords={fp.map("value", job.keywords)}
+              // keywords={fp.map("value", job.keywords)}
               sx={{ mt: 2 }}
             ></Description>
           </div>

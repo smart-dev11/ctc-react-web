@@ -1,49 +1,51 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import { useParams } from 'react-router-dom';
-import { useState } from 'react';
-import Page from '../../components/Page';
-import PageTitle from '../../components/PageTitle';
-import JobDetail from '../Jobs/JobDetail';
-import { useSelector, useDispatch } from 'react-redux';
-import { makeJobSelector, SAVE_JOB, saveJob } from '../../store/jobs';
-import CardTitle from './CardTitle';
-import EllipsisKeywords from './EllipsisKeywords';
-import Description from './Description';
-import ResumeEdit from './ResumeEdit';
-import Button from '../../components/Button';
-import _ from 'lodash';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-import { useThemeUI } from 'theme-ui';
-import { makeLoadingSelector } from '../../store/loading';
-import LoadingOverlay from '../../components/LoadingOverlay';
-import Highlighter from 'react-highlight-words';
-import getMatchingKeywords from './getMatchingKeywords';
+import { jsx } from "theme-ui";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
+import Page from "../../components/Page";
+import PageTitle from "../../components/PageTitle";
+import JobDetail from "../Jobs/JobDetail";
+import { useSelector, useDispatch } from "react-redux";
+import { makeJobSelector, SAVE_JOB, saveJob } from "../../store/jobs";
+import CardTitle from "./CardTitle";
+import EllipsisKeywords from "./EllipsisKeywords";
+import Description from "./Description";
+import ResumeEdit from "./ResumeEdit";
+import Button from "../../components/Button";
+import fp from "lodash/fp";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { useThemeUI } from "theme-ui";
+import { makeLoadingSelector } from "../../store/loading";
+import LoadingOverlay from "../../components/LoadingOverlay";
+import Highlighter from "react-highlight-words";
+import {
+  getMatchingKeywords,
+  getSimilarKeywords,
+  getMissingKeywords,
+} from "../../utils/keyword";
 
 export default () => {
   const { id } = useParams();
   const { theme } = useThemeUI();
-  const job = useSelector(makeJobSelector(id));
-  const keywords = job.keywords.split(', ');
-  const [resumeText, setResumeText] = useState(job.resume_text);
-  const matches = getMatchingKeywords(job.keywords, job.resume_text);
-  const [matchingKeywords, setMatchingKeywords] = useState(matches);
-  const [missingKeywords, setMissingKeywords] = useState(
-    _.difference(keywords, matches)
-  );
-  const [isEditing, setIsEditing] = useState(false);
-  const isSaving = useSelector(makeLoadingSelector([SAVE_JOB]));
   const dispatch = useDispatch();
-  const [hoveredKeyword, setHoveredKeyword] = useState('');
+  const isSaving = useSelector(makeLoadingSelector([SAVE_JOB]));
+  const job = useSelector(makeJobSelector(id));
+  const [resumeText, setResumeText] = useState(job.resume_text);
+  const [isEditing, setIsEditing] = useState(false);
+  const [hoveredKeyword, setHoveredKeyword] = useState("");
+
+  const matchingKeywords = getMatchingKeywords(job.keywords, job.resume_keywords);
+  const similarKeywords = getSimilarKeywords(job.keywords, job.resume_keywords);
+  const missingKeywords = getMissingKeywords(job.keywords, job.resume_keywords);
 
   return (
     <Page>
       <PageTitle>Resume Studio</PageTitle>
       <div
         sx={{
-          boxShadow: 'medium',
-          backgroundColor: 'white',
+          boxShadow: "medium",
+          backgroundColor: "white",
           p: 5,
           mb: 12,
         }}
@@ -51,79 +53,58 @@ export default () => {
         <JobDetail job={job}></JobDetail>
       </div>
       <div
-        sx={{ display: 'grid', gridTemplateColumns: '2fr 3fr', gridGap: 10 }}
+        sx={{ display: "grid", gridTemplateColumns: "2fr 3fr", gridGap: 10 }}
       >
         <div>
-          <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2 }}>
+          <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2 }}>
             Resume Scorecard
           </div>
-          <div sx={{ boxShadow: 'medium', backgroundColor: 'white', p: 6 }}>
+          <div sx={{ boxShadow: "medium", backgroundColor: "white", p: 6 }}>
             <div
               sx={{
-                display: 'flex',
-                justifyContent: 'center',
+                display: "flex",
+                justifyContent: "center",
                 py: 6,
                 mb: 5,
               }}
             >
               <CircularProgressbar
-                value={
-                  (matchingKeywords.length * 100) /
-                  (matchingKeywords.length + missingKeywords.length)
-                }
-                text={`${
-                  (matchingKeywords.length * 100) /
-                  (matchingKeywords.length + missingKeywords.length)
-                }%`}
+                value={job.score * 100}
+                text={`${job.score * 100}%`}
                 styles={buildStyles({
                   pathColor: theme.colors.primary,
                   textColor: theme.colors.primary,
                   trailColor: theme.colors.placeholder,
                 })}
                 strokeWidth={6}
-                sx={{ width: '60%' }}
+                sx={{ width: "60%" }}
               />
             </div>
-            <div
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: '1fr auto',
-                mb: 4,
-              }}
-            >
-              <CardTitle>Matching Keywords</CardTitle>
-              <CardTitle>
-                {matchingKeywords.length} /{' '}
-                {matchingKeywords.length + missingKeywords.length}
-              </CardTitle>
-            </div>
             <EllipsisKeywords
+              title="Matching Keywords"
+              info={`${matchingKeywords.length} / ${job.keywords.length}`}
               keywords={matchingKeywords}
               onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
             ></EllipsisKeywords>
-            <div
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: '1fr auto',
-                mb: 4,
-              }}
-            >
-              <CardTitle>Missing Keywords</CardTitle>
-              <CardTitle>
-                {missingKeywords.length} /{' '}
-                {matchingKeywords.length + missingKeywords.length}
-              </CardTitle>
-            </div>
-            <EllipsisKeywords keywords={missingKeywords}></EllipsisKeywords>
+            <EllipsisKeywords
+              title="Missing Keywords"
+              info={`${missingKeywords.length} / ${job.keywords.length}`}
+              keywords={missingKeywords}
+            ></EllipsisKeywords>
+            <EllipsisKeywords
+              title="Similar Keywords"
+              info={`${similarKeywords.length} / ${job.keywords.length}`}
+              keywords={similarKeywords}
+            ></EllipsisKeywords>
           </div>
-          <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2, mt: 6 }}>
+          <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2, mt: 6 }}>
             Job Description
           </div>
-          <div sx={{ boxShadow: 'medium', bg: 'white', p: 6 }}>
+          <div sx={{ boxShadow: "medium", bg: "white", p: 6 }}>
             <CardTitle sx={{ mb: 4 }}>{job.title}</CardTitle>
             <Description
               description={job.description}
-              keywords={keywords}
+              keywords={fp.map("value", job.keywords)}
               sx={{ mt: 2 }}
             ></Description>
           </div>
@@ -135,12 +116,12 @@ export default () => {
             </Tab>
             <Tab sx={{ py: 1, px: 12 }}>ATS Resume</Tab>
           </div> */}
-          <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2 }}>
+          <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2 }}>
             Resume
           </div>
-          <div sx={{ minHeight: 500, boxShadow: 'medium', bg: 'white', p: 5 }}>
+          <div sx={{ minHeight: 500, boxShadow: "medium", bg: "white", p: 5 }}>
             {isEditing ? (
-              <div sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <div sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
                   onClick={async () => {
                     await dispatch(
@@ -172,7 +153,7 @@ export default () => {
                 </Button>
               </div>
             ) : (
-              <div sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Button>Auto Update</Button>
                 <div>
                   <Button primary={false} onClick={() => setIsEditing(true)}>
@@ -189,29 +170,21 @@ export default () => {
                 {isEditing ? (
                   <ResumeEdit
                     value={resumeText}
-                    onChange={(e) => {
-                      setResumeText(e.target.value);
-                      const matches = getMatchingKeywords(
-                        job.keywords,
-                        e.target.value
-                      );
-                      setMatchingKeywords(matches);
-                      setMissingKeywords(_.difference(keywords, matches));
-                    }}
+                    onChange={(e) => setResumeText(e.target.value)}
                   ></ResumeEdit>
                 ) : (
                   <Highlighter
                     highlightClassName="keyword-highlight"
                     sx={{
-                      '*': {
+                      "*": {
                         fontSize: 2,
                       },
-                      whiteSpace: 'pre-line',
-                      wordBreak: 'break-word',
+                      whiteSpace: "pre-line",
+                      wordBreak: "break-word",
                       mb: 0,
-                      '.keyword-highlight': {
-                        bg: 'primary',
-                        color: 'white',
+                      ".keyword-highlight": {
+                        bg: "primary",
+                        color: "white",
                       },
                     }}
                     searchWords={[hoveredKeyword]}

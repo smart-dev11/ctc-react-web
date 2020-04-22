@@ -1,37 +1,54 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import Keyword from './Keyword';
-import { useState } from 'react';
-import EllipsisTrigger from './EllipsisTrigger';
+import { jsx } from "theme-ui";
+import Keyword from "./Keyword";
+import { useState } from "react";
+import EllipsisTrigger from "./EllipsisTrigger";
+import CardTitle from "./CardTitle";
 
-export default ({ keywords, maxLines = 3, onHoverKeyword = () => {} }) => {
+export default ({
+  title,
+  info,
+  keywords,
+  maxLines = 3,
+  onHoverKeyword = () => {},
+}) => {
   const [expanded, setExpanded] = useState(false);
   return (
     <div>
+      <div
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto",
+          mb: 4,
+        }}
+      >
+        <CardTitle>{title}</CardTitle>
+        <CardTitle>{info}</CardTitle>
+      </div>
       <div
         sx={
           expanded
             ? {}
             : {
-                overflow: 'hidden',
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
+                overflow: "hidden",
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
                 WebkitLineClamp: `${maxLines}`,
-                color: 'transparent',
+                color: "transparent",
               }
         }
       >
-        {keywords.map((keyword) => (
+        {keywords.map((keyword, index) => (
           <Keyword
-            key={keyword}
+            key={index}
             onMouseEnter={() => onHoverKeyword(keyword)}
-            onMouseLeave={() => onHoverKeyword('')}
+            onMouseLeave={() => onHoverKeyword("")}
           >
-            {keyword}
+            {keyword.value}
           </Keyword>
         ))}
       </div>
-      <div sx={{ textAlign: 'center', mb: 3 }}>
+      <div sx={{ textAlign: "center", mb: 3 }}>
         <EllipsisTrigger
           expanded={expanded}
           setExpanded={setExpanded}

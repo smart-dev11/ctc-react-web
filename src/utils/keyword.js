@@ -14,16 +14,25 @@ export const getSimilarKeywords = (keywords, resumeKeywords) => {
   return fp.differenceWith(
     fp.isEqual,
     keywords.filter((keyword) => resumeSkills.includes(keyword.skill)),
-    matchingKeywords,
+    matchingKeywords
   );
 };
 
 export const getMissingKeywords = (keywords, resumeKeywords) => {
   const matchingKeywords = getMatchingKeywords(keywords, resumeKeywords);
   const similarKeywords = getSimilarKeywords(keywords, resumeKeywords);
-  return fp.differenceWith(
-    fp.isEqual,
-    keywords,
-    [...matchingKeywords, ...similarKeywords],
-  );
+  return fp.differenceWith(fp.isEqual, keywords, [
+    ...matchingKeywords,
+    ...similarKeywords,
+  ]);
+};
+
+export const getAutoUpdateConversions = (similarKeywords, resumeKeywords) => {
+  return similarKeywords.map((similarKeyword) => {
+    const correspondingKeyword = fp.find(
+      { skill: similarKeyword.skill },
+      resumeKeywords
+    );
+    return { from: correspondingKeyword.value, to: similarKeyword.value };
+  });
 };

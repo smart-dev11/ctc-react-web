@@ -1,12 +1,18 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Page from "../../components/Page";
 import PageTitle from "../../components/PageTitle";
 import JobDetail from "../Jobs/JobDetail";
 import { useSelector, useDispatch } from "react-redux";
-import { makeJobSelector, SAVE_JOB, saveJob } from "../../store/jobs";
+import {
+  makeJobSelector,
+  SAVE_JOB,
+  saveJob,
+  uploadResume,
+  UPLOAD_RESUME,
+} from "../../store/jobs";
 import CardTitle from "./CardTitle";
 import EllipsisKeywords from "./EllipsisKeywords";
 import Description from "./Description";
@@ -23,13 +29,14 @@ import {
   getMatchingKeywords,
   getSimilarKeywords,
   getMissingKeywords,
+  getAutoUpdateConversions,
 } from "../../utils/keyword";
 
 export default () => {
   const { id } = useParams();
   const { theme } = useThemeUI();
   const dispatch = useDispatch();
-  const isSaving = useSelector(makeLoadingSelector([SAVE_JOB]));
+  const isSaving = useSelector(makeLoadingSelector([SAVE_JOB, UPLOAD_RESUME]));
   const job = useSelector(makeJobSelector(id));
   const [resumeText, setResumeText] = useState(job.resume_text);
   const [isEditing, setIsEditing] = useState(false);
@@ -48,6 +55,41 @@ export default () => {
       job.resume_keywords
     );
     return keyword ? keyword.value : "";
+  };
+
+  useEffect(() => {
+    setResumeText(job.resume_text)
+  }, [job.resume_text])
+
+  const autoUpdate = async () => {
+    if (similarKeywords.length === 0) {
+      alert("There is no keywords to auto update.");
+      return;
+    }
+
+    const conversions = getAutoUpdateConversions(
+      similarKeywords,
+      job.resume_keywords
+    );
+    const confirmBody = conversions
+      .map(({ from, to }) => `${from} => ${to}`)
+      .join("\n");
+
+    if (
+      window.confirm(
+        `Are you sure to update your resume like followings?\n\n${confirmBody}`
+      )
+    ) {
+      await dispatch(
+        saveJob({
+          ...job,
+          resume_text: conversions.reduce(
+            (acc, cur) => acc.replace(cur.from, cur.to),
+            job.resume_text
+          ),
+        })
+      );
+    }
   };
 
   return (
@@ -70,46 +112,48 @@ export default () => {
           <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2 }}>
             Resume Scorecard
           </div>
-          <div sx={{ boxShadow: "medium", backgroundColor: "white", p: 6 }}>
-            <div
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                py: 6,
-                mb: 5,
-              }}
-            >
-              <CircularProgressbar
-                value={job.score * 100}
-                text={`${(job.score * 100).toFixed(2)}%`}
-                styles={buildStyles({
-                  pathColor: theme.colors.primary,
-                  textColor: theme.colors.primary,
-                  trailColor: theme.colors.placeholder,
-                })}
-                strokeWidth={6}
-                sx={{ width: "60%" }}
-              />
+          <LoadingOverlay loading={isSaving}>
+            <div sx={{ boxShadow: "medium", backgroundColor: "white", p: 6 }}>
+              <div
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  py: 6,
+                  mb: 5,
+                }}
+              >
+                <CircularProgressbar
+                  value={job.score * 100}
+                  text={`${(job.score * 100).toFixed(2)}%`}
+                  styles={buildStyles({
+                    pathColor: theme.colors.primary,
+                    textColor: theme.colors.primary,
+                    trailColor: theme.colors.placeholder,
+                  })}
+                  strokeWidth={6}
+                  sx={{ width: "60%" }}
+                />
+              </div>
+              <EllipsisKeywords
+                title="Matching Keywords"
+                info={`${matchingKeywords.length} / ${job.keywords.length}`}
+                keywords={matchingKeywords}
+                onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
+              ></EllipsisKeywords>
+              <EllipsisKeywords
+                title="Similar Keywords"
+                info={`${similarKeywords.length} / ${job.keywords.length}`}
+                keywords={similarKeywords}
+                onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
+              ></EllipsisKeywords>
+              <EllipsisKeywords
+                title="Missing Keywords"
+                info={`${missingKeywords.length} / ${job.keywords.length}`}
+                keywords={missingKeywords}
+                onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
+              ></EllipsisKeywords>
             </div>
-            <EllipsisKeywords
-              title="Matching Keywords"
-              info={`${matchingKeywords.length} / ${job.keywords.length}`}
-              keywords={matchingKeywords}
-              onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
-            ></EllipsisKeywords>
-            <EllipsisKeywords
-              title="Similar Keywords"
-              info={`${similarKeywords.length} / ${job.keywords.length}`}
-              keywords={similarKeywords}
-              onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
-            ></EllipsisKeywords>
-            <EllipsisKeywords
-              title="Missing Keywords"
-              info={`${missingKeywords.length} / ${job.keywords.length}`}
-              keywords={missingKeywords}
-              onHoverKeyword={(keyword) => setHoveredKeyword(keyword)}
-            ></EllipsisKeywords>
-          </div>
+          </LoadingOverlay>
           <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2, mt: 6 }}>
             Job Description
           </div>
@@ -138,13 +182,7 @@ export default () => {
                 <Button
                   onClick={async () => {
                     await dispatch(
-                      saveJob({
-                        ...job,
-                        resume_text: resumeText,
-                        score:
-                          matchingKeywords.length /
-                          (matchingKeywords.length + missingKeywords.length),
-                      })
+                      saveJob({ ...job, resume_text: resumeText })
                     );
                     setIsEditing(false);
                   }}
@@ -167,10 +205,26 @@ export default () => {
               </div>
             ) : (
               <div sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Button>Auto Update</Button>
+                <Button onClick={autoUpdate}>Auto Update</Button>
                 <div>
                   <Button primary={false} onClick={() => setIsEditing(true)}>
                     <i className="fas fa-pen"></i>
+                  </Button>
+                  <Button
+                    primary={false}
+                    sx={{ ml: 2 }}
+                    onClick={() => {
+                      if (
+                        !window.confirm(
+                          "Are you sure to reset your resume update?"
+                        )
+                      ) {
+                        return;
+                      }
+                      dispatch(uploadResume(job.id));
+                    }}
+                  >
+                    <i className="fas fa-redo"></i>
                   </Button>
                   <Button primary={false} sx={{ ml: 2 }}>
                     <i className="fas fa-download"></i>

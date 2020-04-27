@@ -9,7 +9,7 @@ export default ({
   title,
   info,
   keywords,
-  maxLines = 3,
+  maxLines = 2,
   onHoverKeyword = () => {},
 }) => {
   const [expanded, setExpanded] = useState(false);

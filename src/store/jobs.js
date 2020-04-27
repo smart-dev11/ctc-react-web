@@ -20,7 +20,10 @@ export const removeJob = (id) => (dispatch, getState) =>
 
 export const uploadResume = (id, file) => {
   const formData = new FormData();
-  formData.append('resume', file);
+  if (file) {
+    formData.append('resume', file);
+  }
+
   return {
     type: UPLOAD_RESUME,
     payload: delay(
@@ -60,6 +63,8 @@ export default produce((draft, { type, payload, meta }) => {
     case `${UPLOAD_RESUME}_${ActionType.Fulfilled}`:
       draft[meta.id].resume = payload.resume;
       draft[meta.id].resume_text = payload.resume_text;
+      draft[meta.id].resume_keywords = payload.resume_keywords;
+      draft[meta.id].score = payload.score;
       return;
     case `${REMOVE_POSITION}_${ActionType.Fulfilled}`:
       meta.jobs.forEach((id) => {

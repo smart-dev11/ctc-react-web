@@ -230,12 +230,6 @@ export default () => {
                     sx={{ ml: 2 }}
                     onClick={() => {
                       const doc = new jsPDF();
-                      console.log(
-                        job.resume_text
-                          .split('\n')
-                          .map((line) => (line ? `<b>${line}</b>` : '<br />'))
-                          .join('')
-                      );
                       doc.fromHTML(
                         job.resume_text
                           .split('\n')

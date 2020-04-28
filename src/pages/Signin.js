@@ -22,19 +22,17 @@ export default () => {
 
   const { handleSubmit, getFieldProps, touched, errors } = useFormik({
     initialValues: {
-      email: 'eamon@example.com',
-      password: 'abc123'
+      email: '',
+      password: '',
     },
     validationSchema: Yup.object({
-      email: Yup.string()
-        .email('Invalid email address')
-        .required('Required'),
-      password: Yup.string().required('Required')
+      email: Yup.string().email('Invalid email address').required('Required'),
+      password: Yup.string().required('Required'),
     }),
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       await dispatch(login(values.email, values.password));
       history.replace('/');
-    }
+    },
   });
 
   return (
@@ -45,7 +43,7 @@ export default () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           <div
@@ -55,7 +53,7 @@ export default () => {
               px: 6,
               boxShadow: 'medium',
               textAlign: 'center',
-              backgroundColor: 'white'
+              backgroundColor: 'white',
             }}
           >
             <div sx={{ fontSize: 2, fontWeight: 'bold' }}>Login</div>
@@ -76,7 +74,7 @@ export default () => {
                 mb: 8,
                 borderBottomWidth: 1,
                 borderBottomColor: 'border',
-                borderBottomStyle: 'solid'
+                borderBottomStyle: 'solid',
               }}
             ></div>
             {error && (

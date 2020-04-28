@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import { Fragment } from 'react';
-import Moment from 'react-moment';
-import Link from '../../components/Link';
-import JobDetail from './JobDetail';
-import { useDrag } from 'react-dnd';
-import Button from '../../components/Button';
+import { jsx } from "theme-ui";
+import { Fragment } from "react";
+import Moment from "react-moment";
+import Link from "../../components/Link";
+import JobDetail from "./JobDetail";
+import { useDrag } from "react-dnd";
+import Button from "../../components/Button";
 
 export default ({
   job,
@@ -16,7 +16,7 @@ export default ({
   ...props
 }) => {
   const [{ isDragging }, drag] = useDrag({
-    item: { type: 'JOB', job },
+    item: { type: "JOB", job },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -26,10 +26,10 @@ export default ({
       ref={drag}
       sx={{
         p: 5,
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
         gridGap: 25,
-        alignItems: 'center',
+        alignItems: "center",
         opacity: isDragging ? 0.5 : 1,
       }}
       {...props}
@@ -37,12 +37,12 @@ export default ({
       <JobDetail job={job}></JobDetail>
       <div
         sx={{
-          display: 'grid',
+          display: "grid",
           gridGap: 25,
-          alignItems: 'center',
+          alignItems: "center",
           gridTemplateColumns: job.resume
-            ? '110px 1fr auto 115px'
-            : '1fr auto 115px',
+            ? "110px 1fr auto 115px"
+            : "1fr auto 115px",
         }}
       >
         <div>
@@ -53,34 +53,24 @@ export default ({
             <div
               sx={{
                 fontSize: 5,
-                color: job.score >= 0.8 ? 'primary' : 'border',
+                color: job.score >= 0.8 ? "primary" : "border",
               }}
             >
               <i className="fas fa-check"></i>
             </div>
             <div
               sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, auto)',
+                display: "grid",
+                gridTemplateColumns: "repeat(3, auto)",
                 gridGap: 4,
-                justifyContent: 'center',
+                justifyContent: "center",
               }}
             >
               <Link onClick={onUploadClick}>
                 <i className="fas fa-upload"></i>
               </Link>
-              <Link
-                onClick={() =>
-                  job.resume ? onEditClick() : alert('Resume is not uploaded')
-                }
-              >
+              <Link onClick={onEditClick}>
                 <i className="fas fa-pen"></i>
-              </Link>
-              <Link
-                href={job.resume || undefined}
-                onClick={() => !job.resume && alert('Resume is not uploaded')}
-              >
-                <i className="fas fa-download"></i>
               </Link>
               <Link
                 onClick={() =>

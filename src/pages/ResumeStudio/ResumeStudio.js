@@ -1,37 +1,38 @@
 /** @jsx jsx */
-import { jsx } from "theme-ui";
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Page from "../../components/Page";
-import PageTitle from "../../components/PageTitle";
-import JobDetail from "../Jobs/JobDetail";
-import { useSelector, useDispatch } from "react-redux";
+import { jsx } from 'theme-ui';
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Page from '../../components/Page';
+import PageTitle from '../../components/PageTitle';
+import JobDetail from '../Jobs/JobDetail';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   makeJobSelector,
   SAVE_JOB,
   saveJob,
   uploadResume,
   UPLOAD_RESUME,
-} from "../../store/jobs";
-import CardTitle from "./CardTitle";
-import EllipsisKeywords from "./EllipsisKeywords";
-import Description from "./Description";
-import ResumeEdit from "./ResumeEdit";
-import Button from "../../components/Button";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-import { useThemeUI } from "theme-ui";
-import { makeLoadingSelector } from "../../store/loading";
-import LoadingOverlay from "../../components/LoadingOverlay";
-import Highlighter from "react-highlight-words";
-import fp from "lodash/fp";
+} from '../../store/jobs';
+import CardTitle from './CardTitle';
+import EllipsisKeywords from './EllipsisKeywords';
+import Description from './Description';
+import ResumeEdit from './ResumeEdit';
+import Button from '../../components/Button';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { useThemeUI } from 'theme-ui';
+import { makeLoadingSelector } from '../../store/loading';
+import LoadingOverlay from '../../components/LoadingOverlay';
+import Highlighter from 'react-highlight-words';
+import fp from 'lodash/fp';
 import {
   getMatchingKeywords,
   getSimilarKeywords,
   getMissingKeywords,
   getAutoUpdateConversions,
-} from "../../utils/keyword";
-import AutoUpdateConfirm from "./AutoUpdateConfirm";
+} from '../../utils/keyword';
+import AutoUpdateConfirm from './AutoUpdateConfirm';
+import * as jsPDF from 'jspdf';
 
 export default () => {
   const { id } = useParams();
@@ -41,7 +42,7 @@ export default () => {
   const job = useSelector(makeJobSelector(id));
   const [resumeText, setResumeText] = useState(job.resume_text);
   const [isEditing, setIsEditing] = useState(false);
-  const [hoveredKeyword, setHoveredKeyword] = useState("");
+  const [hoveredKeyword, setHoveredKeyword] = useState('');
   const [isAutoUpdateOpen, setIsAutoUpdateOpen] = useState(false);
 
   const matchingKeywords = getMatchingKeywords(
@@ -56,7 +57,7 @@ export default () => {
       { skill: hoveredKeyword.skill },
       job.resume_keywords
     );
-    return keyword ? keyword.value : "";
+    return keyword ? keyword.value : '';
   };
 
   useEffect(() => {
@@ -85,8 +86,8 @@ export default () => {
       <PageTitle>Resume Studio</PageTitle>
       <div
         sx={{
-          boxShadow: "medium",
-          backgroundColor: "white",
+          boxShadow: 'medium',
+          backgroundColor: 'white',
           p: 5,
           mb: 12,
         }}
@@ -94,18 +95,18 @@ export default () => {
         <JobDetail job={job}></JobDetail>
       </div>
       <div
-        sx={{ display: "grid", gridTemplateColumns: "2fr 3fr", gridGap: 10 }}
+        sx={{ display: 'grid', gridTemplateColumns: '2fr 3fr', gridGap: 10 }}
       >
         <div>
-          <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2 }}>
+          <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2 }}>
             Resume Scorecard
           </div>
           <LoadingOverlay loading={isSaving}>
-            <div sx={{ boxShadow: "medium", backgroundColor: "white", p: 6 }}>
+            <div sx={{ boxShadow: 'medium', backgroundColor: 'white', p: 6 }}>
               <div
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
                   py: 6,
                   mb: 5,
                 }}
@@ -119,7 +120,7 @@ export default () => {
                     trailColor: theme.colors.placeholder,
                   })}
                   strokeWidth={6}
-                  sx={{ width: "60%" }}
+                  sx={{ width: '60%' }}
                 />
               </div>
               <EllipsisKeywords
@@ -142,10 +143,10 @@ export default () => {
               ></EllipsisKeywords>
             </div>
           </LoadingOverlay>
-          <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2, mt: 6 }}>
+          <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2, mt: 6 }}>
             Job Description
           </div>
-          <div sx={{ boxShadow: "medium", bg: "white", p: 6 }}>
+          <div sx={{ boxShadow: 'medium', bg: 'white', p: 6 }}>
             <CardTitle sx={{ mb: 4 }}>{job.title}</CardTitle>
             <Description
               description={job.description}
@@ -161,12 +162,12 @@ export default () => {
             </Tab>
             <Tab sx={{ py: 1, px: 12 }}>ATS Resume</Tab>
           </div> */}
-          <div sx={{ pl: 4, fontSize: 2, color: "darkText", mb: 2 }}>
+          <div sx={{ pl: 4, fontSize: 2, color: 'darkText', mb: 2 }}>
             Resume
           </div>
-          <div sx={{ minHeight: 500, boxShadow: "medium", bg: "white", p: 5 }}>
+          <div sx={{ minHeight: 500, boxShadow: 'medium', bg: 'white', p: 5 }}>
             {isEditing ? (
-              <div sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <div sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                   onClick={async () => {
                     await dispatch(
@@ -192,11 +193,11 @@ export default () => {
                 </Button>
               </div>
             ) : (
-              <div sx={{ display: "flex", justifyContent: "space-between" }}>
+              <div sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Button
                   onClick={() => {
                     if (similarKeywords.length === 0) {
-                      alert("There is no keywords to auto update.");
+                      alert('There is no keywords to auto update.');
                     } else {
                       setIsAutoUpdateOpen(true);
                     }
@@ -214,7 +215,7 @@ export default () => {
                     onClick={() => {
                       if (
                         !window.confirm(
-                          "Are you sure to reset your resume update?"
+                          'Are you sure to reset your resume update?'
                         )
                       ) {
                         return;
@@ -224,7 +225,33 @@ export default () => {
                   >
                     <i className="fas fa-redo"></i>
                   </Button>
-                  <Button primary={false} sx={{ ml: 2 }}>
+                  <Button
+                    primary={false}
+                    sx={{ ml: 2 }}
+                    onClick={() => {
+                      const doc = new jsPDF();
+                      console.log(
+                        job.resume_text
+                          .split('\n')
+                          .map((line) => (line ? `<b>${line}</b>` : '<br />'))
+                          .join('')
+                      );
+                      doc.fromHTML(
+                        job.resume_text
+                          .split('\n')
+                          .map((line) =>
+                            line ? `<div>${line}</div>` : '<br></br>'
+                          )
+                          .join(''),
+                        15,
+                        15,
+                        {
+                          width: 170,
+                        }
+                      );
+                      doc.save(`${job.title}.pdf`);
+                    }}
+                  >
                     <i className="fas fa-download"></i>
                   </Button>
                 </div>
@@ -241,15 +268,15 @@ export default () => {
                   <Highlighter
                     highlightClassName="keyword-highlight"
                     sx={{
-                      "*": {
+                      '*': {
                         fontSize: 2,
                       },
-                      whiteSpace: "pre-line",
-                      wordBreak: "break-word",
+                      whiteSpace: 'pre-line',
+                      wordBreak: 'break-word',
                       mb: 0,
-                      ".keyword-highlight": {
-                        bg: "primary",
-                        color: "white",
+                      '.keyword-highlight': {
+                        bg: 'primary',
+                        color: 'white',
                       },
                     }}
                     searchWords={[getSearchWord(hoveredKeyword)]}

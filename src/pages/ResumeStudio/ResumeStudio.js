@@ -31,6 +31,7 @@ import {
   getMissingKeywords,
   getAutoUpdateConversions,
 } from "../../utils/keyword";
+import AutoUpdateConfirm from "./AutoUpdateConfirm";
 
 export default () => {
   const { id } = useParams();
@@ -41,6 +42,7 @@ export default () => {
   const [resumeText, setResumeText] = useState(job.resume_text);
   const [isEditing, setIsEditing] = useState(false);
   const [hoveredKeyword, setHoveredKeyword] = useState("");
+  const [isAutoUpdateOpen, setIsAutoUpdateOpen] = useState(false);
 
   const matchingKeywords = getMatchingKeywords(
     job.keywords,
@@ -58,38 +60,24 @@ export default () => {
   };
 
   useEffect(() => {
-    setResumeText(job.resume_text)
-  }, [job.resume_text])
+    setResumeText(job.resume_text);
+  }, [job.resume_text]);
 
   const autoUpdate = async () => {
-    if (similarKeywords.length === 0) {
-      alert("There is no keywords to auto update.");
-      return;
-    }
-
     const conversions = getAutoUpdateConversions(
       similarKeywords,
       job.resume_keywords
     );
-    const confirmBody = conversions
-      .map(({ from, to }) => `${from} => ${to}`)
-      .join("\n");
 
-    if (
-      window.confirm(
-        `Are you sure to update your resume like followings?\n\n${confirmBody}`
-      )
-    ) {
-      await dispatch(
-        saveJob({
-          ...job,
-          resume_text: conversions.reduce(
-            (acc, cur) => acc.replace(cur.from, cur.to),
-            job.resume_text
-          ),
-        })
-      );
-    }
+    await dispatch(
+      saveJob({
+        ...job,
+        resume_text: conversions.reduce(
+          (acc, cur) => acc.replace(cur.from, cur.to),
+          job.resume_text
+        ),
+      })
+    );
   };
 
   return (
@@ -205,7 +193,17 @@ export default () => {
               </div>
             ) : (
               <div sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Button onClick={autoUpdate}>Auto Update</Button>
+                <Button
+                  onClick={() => {
+                    if (similarKeywords.length === 0) {
+                      alert("There is no keywords to auto update.");
+                    } else {
+                      setIsAutoUpdateOpen(true);
+                    }
+                  }}
+                >
+                  Auto Update
+                </Button>
                 <div>
                   <Button primary={false} onClick={() => setIsEditing(true)}>
                     <i className="fas fa-pen"></i>
@@ -263,6 +261,14 @@ export default () => {
           </div>
         </div>
       </div>
+      <AutoUpdateConfirm
+        isOpen={isAutoUpdateOpen}
+        onClose={() => setIsAutoUpdateOpen(false)}
+        onConfirm={() => {
+          setIsAutoUpdateOpen(false);
+          autoUpdate();
+        }}
+      />
     </Page>
   );
 };

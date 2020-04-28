@@ -19,13 +19,8 @@ const customStyles = {
   },
 };
 
-export default ({ isOpen, onClose, children }) => (
-  <Modal
-    isOpen={isOpen}
-    onRequestClose={onClose}
-    style={customStyles}
-    ariaHideApp={false}
-  >
+export default ({ children, ...props }) => (
+  <Modal style={customStyles} ariaHideApp={false} {...props}>
     {children}
   </Modal>
 );

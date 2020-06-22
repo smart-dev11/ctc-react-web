@@ -1,18 +1,19 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+
+import { register, REGISTER } from '../store/auth';
+import { makeLoadingSelector } from '../store/loading';
+import { makeErrorSelector } from '../store/error';
 import Input from '../components/Input';
 import Link from '../components/Link';
 import Button from '../components/Button';
 import Page from '../components/Page';
 import Error from '../components/Error';
-import { register, REGISTER } from '../store/auth';
-import { makeLoadingSelector } from '../store/loading';
-import { makeErrorSelector } from '../store/error';
 import LoadingOverlay from '../components/LoadingOverlay';
-import { useHistory } from 'react-router-dom';
 
 export default () => {
   const dispatch = useDispatch();

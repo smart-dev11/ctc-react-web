@@ -1,11 +1,12 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui";
 import { Fragment } from "react";
-import Moment from "react-moment";
-import Link from "../../components/Link";
-import JobDetail from "./JobDetail";
 import { useDrag } from "react-dnd";
+import Moment from "react-moment";
+
+import Link from "../../components/Link";
 import Button from "../../components/Button";
+import JobDetail from "./JobDetail";
 
 export default ({
   job,

@@ -4,18 +4,18 @@ import { Fragment } from 'react';
 import { ThemeProvider } from 'theme-ui';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
+import configureStore from './store/configureStore';
 import theme from './theme';
 import Navbar from './components/Navbar';
 import GlobalStyles from './components/GlobalStyles';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import Jobs from './pages/Jobs';
 import ResumeStudio from './pages/ResumeStudio';
-import configureStore from './store/configureStore';
 
 const { store, persistor } = configureStore();
 

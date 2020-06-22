@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui";
-import Keyword from "./Keyword";
 import { useState } from "react";
+
+import Keyword from "./Keyword";
 import EllipsisTrigger from "./EllipsisTrigger";
 import CardTitle from "./CardTitle";
 
@@ -13,6 +14,7 @@ export default ({
   onHoverKeyword = () => {},
 }) => {
   const [expanded, setExpanded] = useState(false);
+
   return (
     <div>
       <div

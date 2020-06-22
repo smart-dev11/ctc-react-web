@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { useState } from 'react';
-import EllipsisTrigger from './EllipsisTrigger';
 import Highlighter from 'react-highlight-words';
+import EllipsisTrigger from './EllipsisTrigger';
 
 export default ({ description, keywords = [], maxLines = 15, ...props }) => {
   const [expanded, setExpanded] = useState(false);

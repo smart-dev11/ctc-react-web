@@ -1,24 +1,24 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import Modal from 'react-modal';
-import { useDropzone } from 'react-dropzone';
-import Button from '../../components/Button';
-import { useState } from 'react';
+import { jsx } from "theme-ui";
+import { useState } from "react";
+import { useDropzone } from "react-dropzone";
+import Modal from "react-modal";
+import Button from "../../components/Button";
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
     padding: 0,
-    border: 'none',
+    border: "none",
     borderRadius: 0,
   },
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: "rgba(0, 0, 0, 0.75)",
     zIndex: 2,
   },
 };
@@ -32,6 +32,18 @@ export default ({ isOpen, onClose, onUpload }) => {
       setFile(files[0]);
     },
   });
+
+  const handleUpload = () => {
+    if (file) {
+      setPreviousFile(file);
+      onUpload(file);
+      setFile(null);
+      onClose();
+    } else {
+      alert("Please drag and drop the resume file");
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -47,19 +59,19 @@ export default ({ isOpen, onClose, onUpload }) => {
           px: 12,
           pb: 10,
           pt: 13,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
         <div
           sx={{
-            border: '1px dashed',
-            borderColor: 'text',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
+            border: "1px dashed",
+            borderColor: "text",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
             width: 585,
             height: 265,
           }}
@@ -68,7 +80,7 @@ export default ({ isOpen, onClose, onUpload }) => {
           <input {...getInputProps()}></input>
           <i className="fas fa-upload" sx={{ fontSize: 7 }}></i>
           <div sx={{ fontSize: 3, mt: 3 }}>
-            {file ? file.name : 'Drag and drop'}
+            {file ? file.name : "Drag and drop"}
           </div>
         </div>
         <div sx={{ mt: 9 }}>
@@ -77,19 +89,7 @@ export default ({ isOpen, onClose, onUpload }) => {
               Use previous resume
             </Button>
           )}
-          <Button
-            onClick={() => {
-              if (file) {
-                setPreviousFile(file);
-                onUpload(file);
-                setFile(null);
-                onClose();
-              } else {
-                alert('Please drag and drop the resume file');
-              }
-            }}
-            sx={{ ml: 3 }}
-          >
+          <Button onClick={handleUpload} sx={{ ml: 3 }}>
             Upload resume <i className="fas fa-plus"></i>
           </Button>
         </div>

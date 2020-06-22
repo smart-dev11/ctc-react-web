@@ -2,11 +2,12 @@
 import { jsx } from 'theme-ui';
 import { Fragment } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import Input from './Input';
-import Link from './Link';
 import { useSelector, useDispatch } from 'react-redux';
 import fp from 'lodash/fp';
+
 import { logout } from '../store/auth';
+import Input from './Input';
+import Link from './Link';
 
 export default () => {
   const history = useHistory();

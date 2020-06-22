@@ -1,62 +1,54 @@
-import request from '../utils/request';
-import produce from 'immer';
-import delay from 'p-min-delay';
-import { ActionType } from 'redux-promise-middleware';
-import { createSelector } from 'reselect';
-import fp from 'lodash/fp';
-import _ from 'lodash';
-import { schema, normalize } from 'normalizr';
-import { REMOVE_JOB, CHANGE_JOB_POSITION } from './jobs';
+import request from "../utils/request";
+import { ActionType } from "redux-promise-middleware";
+import { createSelector } from "reselect";
+import { schema, normalize } from "normalizr";
+import _ from "lodash";
+import fp from "lodash/fp";
+import produce from "immer";
+import { REMOVE_JOB, CHANGE_JOB_POSITION } from "./jobs";
 
-export const GET_POSITIONS = 'GET_POSITIONS';
-export const ADD_POSITION = 'ADD_POSITION';
-export const REMOVE_POSITION = 'REMOVE_POSITION';
-export const SAVE_POSITION = 'SAVE_POSITION';
-export const MOVE_POSITION = 'MOVE_POSITION';
+export const GET_POSITIONS = "GET_POSITIONS";
+export const ADD_POSITION = "ADD_POSITION";
+export const REMOVE_POSITION = "REMOVE_POSITION";
+export const SAVE_POSITION = "SAVE_POSITION";
+export const MOVE_POSITION = "MOVE_POSITION";
 
 export const getPositions = () => ({
   type: GET_POSITIONS,
-  payload: delay(
-    request
-      .get('/positions/')
-      .then(fp.get('data'))
-      .then((data) => {
-        const job = new schema.Entity('jobs');
-        const position = new schema.Entity('positions', { jobs: [job] });
-        const { entities } = normalize(data, [position]);
-        return entities;
-      }),
-    1500
-  ),
+  payload: request
+    .get("/positions/")
+    .then(fp.get("data"))
+    .then((data) => {
+      const job = new schema.Entity("jobs");
+      const position = new schema.Entity("positions", { jobs: [job] });
+      const { entities } = normalize(data, [position]);
+      return entities;
+    }),
 });
 
 export const addPosition = (name) => ({
   type: ADD_POSITION,
-  payload: delay(
-    request.post('/positions/', { name }).then(fp.get('data')),
-    1500
-  ),
+  payload: request.post("/positions/", { name }).then(fp.get("data")),
 });
 
 export const removePosition = (id) => (dispatch, getState) =>
   dispatch({
     type: REMOVE_POSITION,
-    payload: delay(request.delete(`/positions/${id}`), 1500),
+    payload: request.delete(`/positions/${id}`),
     meta: makePositionSelector(id)(getState()),
   });
 
 export const savePosition = (position) => ({
   type: SAVE_POSITION,
-  payload: delay(
-    request.put(`/positions/${position.id}/`, position).then(fp.get('data')),
-    1500
-  ),
+  payload: request
+    .put(`/positions/${position.id}/`, position)
+    .then(fp.get("data")),
 });
 
 export const movePosition = (id, order) => (dispatch, getState) =>
   dispatch({
     type: MOVE_POSITION,
-    payload: delay(request.put(`/positions/${id}/move/`, { order }), 1500),
+    payload: request.put(`/positions/${id}/move/`, { order }),
     meta: { position: makePositionSelector(id)(getState()), order },
   });
 
@@ -116,15 +108,15 @@ export default produce((draft, { type, payload, meta }) => {
 }, initialState);
 
 export const positionsSelector = createSelector(
-  fp.get('positions'),
-  fp.get('jobs'),
+  fp.get("positions"),
+  fp.get("jobs"),
   (positions, jobs) => {
     const arr = Object.values(positions).map((position) => ({
       ...position,
       jobs: (position.jobs || []).map((id) => jobs[id]),
     }));
-    return _.sortBy(arr, 'order');
+    return _.sortBy(arr, "order");
   }
 );
 
-export const makePositionSelector = (id) => fp.get(['positions', id]);
+export const makePositionSelector = (id) => fp.get(["positions", id]);

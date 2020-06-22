@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, useThemeUI } from 'theme-ui';
-import { darken } from 'polished';
 import { Link } from 'react-router-dom';
+import { darken } from 'polished';
 
 export default ({ to, color = 'text', disabled, children, ...props }) => {
   const { theme } = useThemeUI();

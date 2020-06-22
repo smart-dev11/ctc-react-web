@@ -1,8 +1,8 @@
 import { applyMiddleware, createStore } from 'redux';
-import thunk from 'redux-thunk';
-import promise from 'redux-promise-middleware';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistStore, persistReducer } from 'redux-persist';
+import thunk from 'redux-thunk';
+import promise from 'redux-promise-middleware';
 import storage from 'redux-persist/lib/storage';
 import rootReducer from './rootReducer';
 

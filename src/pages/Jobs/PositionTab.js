@@ -1,12 +1,13 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { Fragment, forwardRef } from 'react';
-import Tab from '../../components/Tab';
-import ReactHoverObserver from 'react-hover-observer';
-import Link from '../../components/Link';
 import { useDrop } from 'react-dnd';
 import { ellipsis } from 'polished';
+import ReactHoverObserver from 'react-hover-observer';
 import _ from 'lodash';
+
+import Tab from '../../components/Tab';
+import Link from '../../components/Link';
 import composeRefs from '@seznam/compose-react-refs';
 
 export default forwardRef(
